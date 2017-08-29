@@ -1,4 +1,4 @@
-﻿using Bangazon.Models;
+﻿using BangazonAuth.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +14,7 @@ namespace BangazonAuth.Models
         public int OrderId { get; set; }
 
         [Required]
-        public int CustomerId { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
 
         [Required]
