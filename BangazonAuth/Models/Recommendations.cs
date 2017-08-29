@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Bangazon.Models;
+using BangazonAuth.Models;
 
 namespace BangazonAuth.Models
 {
@@ -13,12 +13,10 @@ namespace BangazonAuth.Models
         [Key]
         public int RecommendationId { get; set; }
 
-        [Required]  // not  sure how to name this to link to User on scaffolding
-        public int RecommenderId { get; set; }
+        [Required]
         public virtual ApplicationUser Recommender { get; set; }
 
         [Required]
-        public int RecommendeeId { get; set; }
         public virtual ApplicationUser Recommendee { get; set; }
 
         [Required]

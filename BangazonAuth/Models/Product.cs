@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace Bangazon.Models
+namespace BangazonAuth.Models
 {
   public class Product
   {
     [Key]
     public int ProductId {get;set;}
-
-    [NotMapped]
+    
+    [Required]
     public int Quantity { get; set; }
 
 
@@ -31,6 +31,15 @@ namespace Bangazon.Models
     [Required]
     [DisplayFormat(DataFormatString = "{0:C}")]
     public double Price { get; set; }
+
+    [Required]
+    public string Location { get; set; }
+
+    [Required]
+    public bool LocalDelivery { get; set; }
+
+    [Required]
+    public string PhotoURL { get; set; }
 
     [Required]
     public virtual ApplicationUser User { get; set; }

@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using BangazonAuth.Models;
 using BangazonAuth.Models.ManageViewModels;
 using BangazonAuth.Services;
-using Bangazon.Models;
 
 namespace BangazonAuth.Controllers
 {
