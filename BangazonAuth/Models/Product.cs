@@ -57,5 +57,11 @@ namespace BangazonAuth.Models
             yield return new ValidationResult("Please contact our customer service department to sell something of this value.");
         }
     }
+
+    public ICollection<Rating> Ratings { get; set; }
+    
+    public ICollection<Recommendations> Recommended { get; set; }
+    
+    public ICollection<UserLikes> UserLiked { get; set; }
   }
 }

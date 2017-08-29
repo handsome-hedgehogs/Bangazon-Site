@@ -24,6 +24,10 @@ namespace BangazonAuth.Models
         public ICollection<Product> Products;
         public ICollection<PaymentType> PaymentTypes;
         public ICollection<Order> Orders;
+
+        public ICollection<Rating> Ratings { get; set; }
+
+        public ICollection<UserLikes> UserLiked { get; set; }
     }
 }
 
