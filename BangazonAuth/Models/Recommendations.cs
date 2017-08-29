@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Bangazon.Models;
+using BangazonAuth.Models;
 
 namespace BangazonAuth.Models
 {

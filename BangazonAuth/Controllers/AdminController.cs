@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bangazon.Models;
-using Bangazon.Data;
+using BangazonAuth.Models;
+using BangazonAuth.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using BangazonAuth.Data;
 
-namespace Bangazon.Controllers
+
+namespace BangazonAuth.Controllers
 {
     [AuthorizeAttribute(Roles="Administrator")]
     public class AdminController : Controller

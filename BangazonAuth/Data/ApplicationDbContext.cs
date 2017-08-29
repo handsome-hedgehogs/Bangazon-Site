@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Models;
-using Bangazon.Models;
 
 namespace BangazonAuth.Data
 {
@@ -24,16 +23,16 @@ namespace BangazonAuth.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        public DbSet<Bangazon.Models.ProductType> ProductType { get; set; }
+        public DbSet<BangazonAuth.Models.ProductType> ProductType { get; set; }
 
-        public DbSet<Bangazon.Models.Product> Product { get; set; }
+        public DbSet<BangazonAuth.Models.Product> Product { get; set; }
 
         public DbSet<BangazonAuth.Models.Order> Order { get; set; }
 
-        public DbSet<Bangazon.Models.PaymentType> PaymentType { get; set; }
+        public DbSet<BangazonAuth.Models.PaymentType> PaymentType { get; set; }
 
         public DbSet<BangazonAuth.Models.Rating> Rating { get; set; }
 
-        public DbSet<Bangazon.Models.ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<BangazonAuth.Models.ApplicationUser> ApplicationUser { get; set; }
     }
 }
