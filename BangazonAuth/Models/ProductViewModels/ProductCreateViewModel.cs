@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BangazonAuth.Data;
-using BangazonAuth.Models;
 
 namespace BangazonAuth.Models.ProductViewModels
 {

@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-
 namespace BangazonAuth.Controllers
 {
     [AuthorizeAttribute(Roles="Administrator")]

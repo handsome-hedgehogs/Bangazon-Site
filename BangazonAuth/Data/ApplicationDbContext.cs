@@ -33,6 +33,6 @@ namespace BangazonAuth.Data
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
    
-
+        public DbSet<Rating> Rating { get; set; }
     }
 }
