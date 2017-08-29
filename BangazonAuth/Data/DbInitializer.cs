@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Threading.Tasks;
 using BangazonAuth.Data;
 
-namespace Bangazon.Data
+namespace BangazonAuth.Data
 {
     public static class DbInitializer
     {

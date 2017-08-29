@@ -27,12 +27,15 @@ namespace BangazonAuth.Data
 
         public DbSet<Product> Product { get; set; }
 
+
         public DbSet<Order> Order { get; set; }
 
         public DbSet<PaymentType> PaymentType { get; set; }
 
+
         public DbSet<Rating> Rating { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+
     }
 }
