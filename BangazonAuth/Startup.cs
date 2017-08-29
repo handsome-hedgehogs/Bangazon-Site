@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using BangazonAuth.Data;
 using BangazonAuth.Models;
 using BangazonAuth.Services;
+using Bangazon.Models;
 
 namespace BangazonAuth
 {
