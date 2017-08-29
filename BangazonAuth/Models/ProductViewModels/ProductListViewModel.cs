@@ -8,4 +8,5 @@ namespace BangazonAuth.Models.ProductViewModels
   {
     public IEnumerable<Product> Products { get; set; }
   }
+
 }

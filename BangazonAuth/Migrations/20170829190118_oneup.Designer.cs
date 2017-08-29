@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using BangazonAuth.Data;
 
-namespace BangazonAuth.Migrations
+namespace BangazonAuth.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170829190118_oneup")]
+    partial class oneup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -197,49 +198,10 @@ namespace BangazonAuth.Migrations
                     b.ToTable("ProductType");
                 });
 
-            modelBuilder.Entity("BangazonAuth.Models.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CustomerId");
-
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<int?>("PaymentTypeId");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("PaymentTypeId");
-
-                    b.ToTable("Order");
-                });
-
-            modelBuilder.Entity("BangazonAuth.Models.OrderProduct", b =>
-                {
-                    b.Property<int>("OrderProductId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("OrderId");
-
-                    b.Property<int>("ProductId");
-
-                    b.HasKey("OrderProductId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderProduct");
-                });
-
             modelBuilder.Entity("BangazonAuth.Models.Rating", b =>
                 {
                     b.Property<int>("RatingId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ApplicationUserId");
 
                     b.Property<int>("ProductId");
 
@@ -433,7 +395,7 @@ namespace BangazonAuth.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Bangazon.Models.ApplicationUser")
+                    b.HasOne("BangazonAuth.Models.ApplicationUser")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -441,7 +403,7 @@ namespace BangazonAuth.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Bangazon.Models.ApplicationUser")
+                    b.HasOne("BangazonAuth.Models.ApplicationUser")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -454,7 +416,7 @@ namespace BangazonAuth.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Bangazon.Models.ApplicationUser")
+                    b.HasOne("BangazonAuth.Models.ApplicationUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
