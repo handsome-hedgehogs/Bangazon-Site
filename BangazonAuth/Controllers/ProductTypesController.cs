@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Bangazon.Models;
+using BangazonAuth.Models;
 using BangazonAuth.Data;
 
 namespace BangazonAuth.Controllers

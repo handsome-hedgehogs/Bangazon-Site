@@ -1,4 +1,4 @@
-﻿using Bangazon.Models;
+﻿using BangazonAuth.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +13,6 @@ namespace BangazonAuth.Models
         public int UserLikeId { get; set; }
 
         [Required]
-        public int Id { get; set; } // may not be Id, whatever the Key is called for Application User
         public virtual ApplicationUser ApplicationUser { get; set; }
 
         [Required]

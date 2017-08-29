@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using BangazonAuth.Models;
 using BangazonAuth.Models.AccountViewModels;
 using BangazonAuth.Services;
-using Bangazon.Models;
+using BangazonAuth.Data;
+
 
 namespace BangazonAuth.Controllers
 {
@@ -24,19 +24,19 @@ namespace BangazonAuth.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
-        private readonly string _externalCookieScheme;
+        private ApplicationDbContext _context;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
             IEmailSender emailSender,
             ISmsSender smsSender,
+            ApplicationDbContext ctx,
             ILoggerFactory loggerFactory)
         {
+            _context = ctx;
             _userManager = userManager;
             _signInManager = signInManager;
-            _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -46,11 +46,8 @@ namespace BangazonAuth.Controllers
         // GET: /Account/Login
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl = null)
+        public IActionResult Login(string returnUrl = null)
         {
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
-
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -65,6 +62,7 @@ namespace BangazonAuth.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -103,6 +101,41 @@ namespace BangazonAuth.Controllers
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Seed()
+        {
+            // Check if there is  default admin user already
+            var result = await _userManager.FindByEmailAsync("admin@admin.com");
+
+            // There is no admin user
+            if (result == null)
+            {
+                // Create an admin user instance
+                ApplicationUser user = new ApplicationUser
+                {
+                    FirstName = "admin",
+                    LastName = "admin",
+                    StreetAddress = "123 Infinity Way",
+                    UserName = "admin@admin.com",
+                    Email = "admin@admin.com"
+                };
+
+                // Attempt to create the user in the database
+                var makeOne = await _userManager.CreateAsync(user, "Password@123");
+
+                // Creation succeed check
+                if (makeOne.Succeeded)
+                {
+                    // Assign the admin user to the Administrator role that was
+                    // created in DbInitialize
+                    await _userManager.AddToRoleAsync(user, "ADMINISTRATOR");
+                }
+            }
+
+            return View();
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -113,14 +146,21 @@ namespace BangazonAuth.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    StreetAddress = model.StreetAddress,
+                    Email = model.Email
+                };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -135,14 +175,14 @@ namespace BangazonAuth.Controllers
         }
 
         //
-        // POST: /Account/Logout
+        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(ProductsController.Index), "Products");
         }
 
         //
@@ -153,7 +193,7 @@ namespace BangazonAuth.Controllers
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { ReturnUrl = returnUrl });
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
         }
@@ -270,7 +310,7 @@ namespace BangazonAuth.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByNameAsync(model.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -280,7 +320,7 @@ namespace BangazonAuth.Controllers
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
                 // Send an email with this link
                 //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                //var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                 //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
                 //   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 //return View("ForgotPasswordConfirmation");
@@ -319,7 +359,7 @@ namespace BangazonAuth.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -444,14 +484,6 @@ namespace BangazonAuth.Controllers
             }
         }
 
-        //
-        // GET: /Account/AccessDenied
-        [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
-
         #region Helpers
 
         private void AddErrors(IdentityResult result)
@@ -462,6 +494,11 @@ namespace BangazonAuth.Controllers
             }
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            return _userManager.GetUserAsync(HttpContext.User);
+        }
+
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -470,7 +507,7 @@ namespace BangazonAuth.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(ProductsController.Index), "Products");
             }
         }
 

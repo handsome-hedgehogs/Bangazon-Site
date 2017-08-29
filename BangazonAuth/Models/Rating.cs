@@ -1,4 +1,4 @@
-﻿using Bangazon.Models;
+﻿using BangazonAuth.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,12 +13,11 @@ namespace BangazonAuth.Models
         public int RatingId { get; set; }
 
         [Required]
-        public int ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
         [Required]
         public int ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         [Required]
         [Range(0, 5)]
