@@ -8,8 +8,8 @@ using BangazonAuth.Data;
 namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170829175546_poop5")]
-    partial class poop5
+    [Migration("20170829190748_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -219,6 +219,53 @@ namespace BangazonAuth.Migrations
                     b.ToTable("Rating");
                 });
 
+            modelBuilder.Entity("BangazonAuth.Models.Recommendations", b =>
+                {
+                    b.Property<int>("RecommendationId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Done");
+
+                    b.Property<int>("ProductId");
+
+                    b.Property<string>("RecommendeeId")
+                        .IsRequired();
+
+                    b.Property<string>("RecommenderId")
+                        .IsRequired();
+
+                    b.HasKey("RecommendationId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("RecommendeeId");
+
+                    b.HasIndex("RecommenderId");
+
+                    b.ToTable("Recommendations");
+                });
+
+            modelBuilder.Entity("BangazonAuth.Models.UserLikes", b =>
+                {
+                    b.Property<int>("UserLikeId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired();
+
+                    b.Property<bool>("Like");
+
+                    b.Property<int>("ProductId");
+
+                    b.HasKey("UserLikeId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("UserLikes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -375,13 +422,44 @@ namespace BangazonAuth.Migrations
             modelBuilder.Entity("BangazonAuth.Models.Rating", b =>
                 {
                     b.HasOne("BangazonAuth.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BangazonAuth.Models.Recommendations", b =>
+                {
+                    b.HasOne("BangazonAuth.Models.Product", "Product")
+                        .WithMany("Recommended")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BangazonAuth.Models.ApplicationUser", "Recommendee")
+                        .WithMany()
+                        .HasForeignKey("RecommendeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BangazonAuth.Models.ApplicationUser", "Recommender")
+                        .WithMany()
+                        .HasForeignKey("RecommenderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BangazonAuth.Models.UserLikes", b =>
+                {
+                    b.HasOne("BangazonAuth.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("UserLiked")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BangazonAuth.Models.Product", "Product")
+                        .WithMany("UserLiked")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

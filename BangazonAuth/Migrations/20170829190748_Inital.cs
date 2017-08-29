@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BangazonAuth.Migrations
 {
-    public partial class poop4 : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -271,7 +271,68 @@ namespace BangazonAuth.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recommendations",
+                columns: table => new
+                {
+                    RecommendationId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Done = table.Column<bool>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false),
+                    RecommendeeId = table.Column<string>(nullable: false),
+                    RecommenderId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recommendations", x => x.RecommendationId);
+                    table.ForeignKey(
+                        name: "FK_Recommendations_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Recommendations_AspNetUsers_RecommendeeId",
+                        column: x => x.RecommendeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Recommendations_AspNetUsers_RecommenderId",
+                        column: x => x.RecommenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLikes",
+                columns: table => new
+                {
+                    UserLikeId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApplicationUserId = table.Column<string>(nullable: false),
+                    Like = table.Column<bool>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLikes", x => x.UserLikeId);
+                    table.ForeignKey(
+                        name: "FK_UserLikes_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserLikes_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -291,13 +352,13 @@ namespace BangazonAuth.Migrations
                         column: x => x.OrderId,
                         principalTable: "Order",
                         principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_OrderProduct_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Product",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -357,6 +418,31 @@ namespace BangazonAuth.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Recommendations_ProductId",
+                table: "Recommendations",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recommendations_RecommendeeId",
+                table: "Recommendations",
+                column: "RecommendeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recommendations_RecommenderId",
+                table: "Recommendations",
+                column: "RecommenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLikes_ApplicationUserId",
+                table: "UserLikes",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLikes_ProductId",
+                table: "UserLikes",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
@@ -390,6 +476,12 @@ namespace BangazonAuth.Migrations
 
             migrationBuilder.DropTable(
                 name: "Rating");
+
+            migrationBuilder.DropTable(
+                name: "Recommendations");
+
+            migrationBuilder.DropTable(
+                name: "UserLikes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
