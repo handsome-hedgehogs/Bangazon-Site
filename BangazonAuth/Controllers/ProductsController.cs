@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System;
 
-
 namespace BangazonAuth.Controllers
 {
     public class ProductsController : Controller
