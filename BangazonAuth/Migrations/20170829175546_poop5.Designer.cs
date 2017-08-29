@@ -8,8 +8,8 @@ using BangazonAuth.Data;
 namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170829171317_poop3")]
-    partial class poop3
+    [Migration("20170829175546_poop5")]
+    partial class poop5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,16 +81,19 @@ namespace BangazonAuth.Migrations
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CustomerId");
-
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<int?>("PaymentTypeId");
 
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
                     b.HasKey("OrderId");
 
                     b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Order");
                 });
@@ -151,9 +154,19 @@ namespace BangazonAuth.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
+                    b.Property<bool>("LocalDelivery");
+
+                    b.Property<string>("Location")
+                        .IsRequired();
+
+                    b.Property<string>("PhotoURL")
+                        .IsRequired();
+
                     b.Property<double>("Price");
 
                     b.Property<int>("ProductTypeId");
+
+                    b.Property<int>("Quantity");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -190,13 +203,12 @@ namespace BangazonAuth.Migrations
                     b.Property<int>("RatingId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ApplicationUserId");
-
                     b.Property<int>("ProductId");
 
                     b.Property<int>("ProductRating");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("RatingId");
 
@@ -319,6 +331,11 @@ namespace BangazonAuth.Migrations
                     b.HasOne("BangazonAuth.Models.PaymentType", "PaymentType")
                         .WithMany()
                         .HasForeignKey("PaymentTypeId");
+
+                    b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.OrderProduct", b =>
@@ -364,7 +381,8 @@ namespace BangazonAuth.Migrations
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BangazonAuth.Migrations
 {
-    public partial class poop4 : Migration
+    public partial class poop5 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

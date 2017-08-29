@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using BangazonAuth.Data;
 
-namespace BangazonAuth.Data.Migrations
+namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170829164756_Initial")]
-    partial class Initial
+    [Migration("20170829174641_poop4")]
+    partial class poop4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

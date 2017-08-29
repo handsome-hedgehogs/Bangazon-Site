@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BangazonAuth.Migrations
 {
-    public partial class poop3 : Migration
+    public partial class poop4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -149,8 +149,12 @@ namespace BangazonAuth.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 255, nullable: false),
+                    LocalDelivery = table.Column<bool>(nullable: false),
+                    Location = table.Column<string>(nullable: false),
+                    PhotoURL = table.Column<string>(nullable: false),
                     Price = table.Column<double>(nullable: false),
                     ProductTypeId = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 55, nullable: false),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -222,9 +226,9 @@ namespace BangazonAuth.Migrations
                 {
                     OrderId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CustomerId = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
-                    PaymentTypeId = table.Column<int>(nullable: true)
+                    PaymentTypeId = table.Column<int>(nullable: true),
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -235,6 +239,12 @@ namespace BangazonAuth.Migrations
                         principalTable: "PaymentType",
                         principalColumn: "PaymentTypeId",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Order_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,10 +253,9 @@ namespace BangazonAuth.Migrations
                 {
                     RatingId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ApplicationUserId = table.Column<int>(nullable: false),
                     ProductId = table.Column<int>(nullable: false),
                     ProductRating = table.Column<int>(nullable: false),
-                    UserId = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -262,7 +271,7 @@ namespace BangazonAuth.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -306,6 +315,11 @@ namespace BangazonAuth.Migrations
                 name: "IX_Order_PaymentTypeId",
                 table: "Order",
                 column: "PaymentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Order_UserId",
+                table: "Order",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderProduct_OrderId",

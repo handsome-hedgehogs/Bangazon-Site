@@ -17,7 +17,7 @@ namespace BangazonAuth.Models
 
         [Required]
         public int ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         [Required]
         [Range(0, 5)]
