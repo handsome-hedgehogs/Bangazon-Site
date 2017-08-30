@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Models;
+using BangazonAuth.Models.AccountViewModels;
+using BangazonAuth.Models.ManageViewModels;
 
 namespace BangazonAuth.Data
 {
@@ -31,6 +33,7 @@ namespace BangazonAuth.Data
                 .HasDefaultValueSql("GETDATE()");
         }
 
+      
         public DbSet<ProductType> ProductType { get; set; }
 
         public DbSet<Product> Product { get; set; }
