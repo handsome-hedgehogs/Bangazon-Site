@@ -13,6 +13,7 @@ using BangazonAuth.Services;
 using BangazonAuth.Data;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BangazonAuth.Controllers
 {
     [Authorize]

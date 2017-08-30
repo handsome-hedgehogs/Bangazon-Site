@@ -35,6 +35,12 @@
                     <li><a asp-area="" asp-controller="Manage" asp-action="Index">Profile</a></li>  
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
+                <form asp-controller="Products" asp-action="Search" method="get" >
+                    <ul class="nav navbar-nav">
+                        <li><input type="text" name="SearchString" /></li>
+                        <li><input type="submit" value="Search" /></li>
+                    </ul>
+                 </form>
             </div>
         </div>
     </div>
