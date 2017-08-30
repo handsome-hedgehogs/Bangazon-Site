@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 namespace BangazonAuth.Models.ProductViewModels
 {
   public class ProductTypesViewModel
