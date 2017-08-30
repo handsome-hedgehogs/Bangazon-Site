@@ -8,9 +8,10 @@ using BangazonAuth.Data;
 namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170830165742_NewContext")]
+    partial class NewContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -81,8 +82,7 @@ namespace BangazonAuth.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("GETDATE()");
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<int?>("PaymentTypeId");
 
@@ -126,8 +126,7 @@ namespace BangazonAuth.Migrations
                         .HasMaxLength(20);
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("GETDATE()");
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Description")
                         .IsRequired()

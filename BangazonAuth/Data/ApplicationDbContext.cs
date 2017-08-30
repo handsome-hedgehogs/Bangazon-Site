@@ -20,6 +20,7 @@ namespace BangazonAuth.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             // Written by Jackie Knight and Eliza Meeks
             // Makes tables autogenerate dates.
             builder.Entity<Product>()
@@ -32,7 +33,6 @@ namespace BangazonAuth.Data
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
         }
-
       
         public DbSet<ProductType> ProductType { get; set; }
 
