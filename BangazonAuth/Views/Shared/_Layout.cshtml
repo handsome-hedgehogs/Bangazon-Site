@@ -34,13 +34,13 @@
                     <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell Something</a></li>                    
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
+                <form asp-controller="Products" asp-action="Search" method="get" >
+                    <ul class="nav navbar-nav">
+                        <li><input type="text" name="SearchString" /></li>
+                        <li><input type="submit" value="Search" /></li>
+                    </ul>
+                 </form>
             </div>
-            <form asp-controller="Products" asp-action="Search" method="get">
-                <p>
-                    Search: <input type="text" name="SearchString"/>
-                    <input type="submit" value="Search" />
-                </p>
-            </form>
         </div>
     </div>
     <div class="container body-content">
