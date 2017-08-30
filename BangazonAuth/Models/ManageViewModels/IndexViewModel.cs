@@ -14,21 +14,21 @@ namespace BangazonAuth.Models.ManageViewModels
 
         public IList<UserLoginInfo> Logins { get; set; }
 
-        public string PhoneNumber { get; set; }
+        //public string PhoneNumber { get; set; }
 
-        public string FirstName { get; set; }
+        //public string FirstName { get; set; }
 
-        public string LastName { get; set; }
+        //public string LastName { get; set; }
 
-        public string Address { get; set; }
+        //public string Address { get; set; }
 
-        public string Email { get; set; }
+        //public string Email { get; set; }
 
         public bool TwoFactor { get; set; }
 
         public bool BrowserRemembered { get; set; }
 
-        public ApplicationUser User { get; set; }
+        public ApplicationUser AppUser { get; set; }
 
         public ICollection<PaymentType> PaymentTypes { get; set; }
 
@@ -38,7 +38,7 @@ namespace BangazonAuth.Models.ManageViewModels
 
         public IndexViewModel()
         {
-            
+            AppUser = new ApplicationUser();
         }
 
 

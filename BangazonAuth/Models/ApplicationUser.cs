@@ -12,12 +12,15 @@ namespace BangazonAuth.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
+        [Display(Name ="First Name")]
         public string FirstName { get; set; }
 
         [Required]
+        [Display(Name ="Last Name")]
         public string LastName { get; set; }
 
         [Required]
+        [Display(Name = "Address")]
         public string StreetAddress { get; set; }
 
         public ICollection<Product> Products;

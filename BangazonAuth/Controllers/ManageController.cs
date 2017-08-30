@@ -11,6 +11,7 @@ using BangazonAuth.Models;
 using BangazonAuth.Models.ManageViewModels;
 using BangazonAuth.Services;
 using BangazonAuth.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BangazonAuth.Controllers
 {
@@ -64,15 +65,16 @@ namespace BangazonAuth.Controllers
             var model = new IndexViewModel()
             {
                 
-                HasPassword = await _userManager.HasPasswordAsync(user),
-                FirstName =  user.FirstName,
-                LastName = user.LastName,
-                Address = user.StreetAddress,
-                Email = user.Email,
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
+                //HasPassword = await _userManager.HasPasswordAsync(user),
+                //FirstName =  user.FirstName,
+                //LastName = user.LastName,
+                //Address = user.StreetAddress,
+                //Email = user.Email,
+                //PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
-                Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                //Logins = await _userManager.GetLoginsAsync(user),
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                AppUser = user
             
                 
             };
@@ -351,6 +353,34 @@ namespace BangazonAuth.Controllers
             return RedirectToAction(nameof(ManageLogins), new { Message = message });
         }
 
+        // GET: ApplicationUser Profile/Edit/5
+        public async Task<IActionResult> EditProfile(string id)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            IndexViewModel User = new IndexViewModel()
+            {
+                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                AppUser = user
+            };
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (User.AppUser == null)
+            {
+                return NotFound();
+            }
+            return View(User);
+        }
+
         #region Helpers
 
         private void AddErrors(IdentityResult result)
@@ -379,5 +409,11 @@ namespace BangazonAuth.Controllers
         }
 
         #endregion
+
     }
 }
+//empDetail.Employee = await _context.Employee
+//                .Include(e => e.EmployeeComputers)
+//                .Include(t => t.EmployeeTrainings)
+//                .SingleOrDefaultAsync(m => m.EmployeeId == id);
+//empDetail.DepartmentList = await _context.Department.ToListAsync();

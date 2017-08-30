@@ -10,29 +10,15 @@
     <h4>Profile Settings your account settings</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Password:</dt>
-        <dd>
-            @if (Model.HasPassword)
-            {
-                <a asp-controller="Manage" asp-action="ChangePassword">Change</a>
-            }
-            else
-            {
-                <a asp-controller="Manage" asp-action="SetPassword" class="btn-bracketed">Create</a>
-            }
-        </dd>
-        <dt></dt>
-        
-
 
         <dt>Name: </dt>
         <dd>
-            @Model.FirstName @Model.LastName
+            @Model.AppUser.FirstName @Model.AppUser.LastName
         </dd>
 
         <dt>Phone Number: </dt>
         <dd>
-            @Model.PhoneNumber
+            @Model.AppUser.PhoneNumber
             @*@(Model.PhoneNumber ?? "None")
                 @if (Model.PhoneNumber != null)
                 {
@@ -50,11 +36,11 @@
         </dd>
         <dt>Address: </dt>
         <dd>
-            @Model.Address
+            @Model.AppUser.StreetAddress
         </dd>
         <dt>Email: </dt>
         <dd>
-            @Model.Email
+            @Model.AppUser.Email
         </dd>
         @*<dt>Two-Factor Authentication:</dt>
         <dd>
@@ -84,7 +70,7 @@
         <a asp-action="OrderHXDetail" asp-route-id="">Order History</a>
     </div> 
     <br />
-    <a asp-action="CreatePayment" asp-route-id="@Model." class="btn btn-default">Edit Profile</a>
+    <a asp-action="EditProfile" asp-route-id="@Model.AppUser.Id" class="btn btn-default">Edit Profile</a>
 
 
 </div>
