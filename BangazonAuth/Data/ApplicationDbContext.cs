@@ -18,9 +18,8 @@ namespace BangazonAuth.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+            // Written by Jackie Knight and Eliza Meeks
+            // Makes tables autogenerate dates.
             builder.Entity<Product>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
