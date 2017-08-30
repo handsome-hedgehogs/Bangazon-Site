@@ -61,7 +61,7 @@ namespace BangazonAuth.Controllers
             {
                 return View("Error");
             }
-            var model = new IndexViewModel(_context)
+            var model = new IndexViewModel()
             {
                 
                 HasPassword = await _userManager.HasPasswordAsync(user),

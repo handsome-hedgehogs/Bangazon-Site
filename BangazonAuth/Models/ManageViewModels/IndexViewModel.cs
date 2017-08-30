@@ -28,7 +28,15 @@ namespace BangazonAuth.Models.ManageViewModels
 
         public bool BrowserRemembered { get; set; }
 
-        public IndexViewModel(ApplicationDbContext context)
+        public ApplicationUser User { get; set; }
+
+        public ICollection<PaymentType> PaymentTypes { get; set; }
+
+        public ICollection<Order> Orders { get; set; }
+
+        public ICollection<Product> Products { get; set; }
+
+        public IndexViewModel()
         {
             
         }
