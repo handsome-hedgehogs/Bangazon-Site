@@ -5,12 +5,18 @@ using BangazonAuth.Data;
 
 namespace BangazonAuth.Models.ProductViewModels
 {
-  public class ProductCreateViewModel
-  {
-    public List<SelectListItem> ProductTypeId { get; set; }
-    public Product Product { get; set; }
-    public ProductCreateViewModel(ApplicationDbContext ctx) 
-    { 
+    public class ProductCreateViewModel
+    {
+        public List<SelectListItem> ProductTypeId { get; set; }
+
+        public Product Product { get; set; }
+
+        public ApplicationUser User { get; set; }
+    
+    public ProductCreateViewModel(ApplicationDbContext ctx, ApplicationUser _currentUser) 
+    {
+            User = _currentUser;
+
         // Creating SelectListItems will be used in a @Html.DropDownList
         // control in a Razor template. See Views/Products/Create.cshtml
         // for an example.
