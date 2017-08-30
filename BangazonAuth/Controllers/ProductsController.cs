@@ -61,7 +61,9 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
-      
+        
+        //Author: Willie Pruitt
+        //Filters and Displays List of products based on user input {searchString}
         public async Task<IActionResult> Search(string searchString)
         {
             ProductListViewModel model = new ProductListViewModel();
@@ -69,7 +71,7 @@ namespace BangazonAuth.Controllers
 
             model.Products = await _context.Product
                 .ToListAsync();
-
+            //If search param not empty or null, search if Product description or title contains input
             if (!string.IsNullOrEmpty(searchString))
             {
                 model.Products = model.Products.Where(p => p.Description.Contains(searchString) || p.Title.Contains(searchString));
