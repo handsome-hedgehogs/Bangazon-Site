@@ -33,10 +33,11 @@
                     @if (Context.User.Identity.IsAuthenticated)
                     {
                     
-                    <li><a href="/types">Product Types</a></li>
-                    <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell A Product</a></li>                    
+                    <li><a href="/types">Product Types</a></li>                   
+                    <li><a asp-area="Account" asp-controller="Products" asp-action="Create">Sell Something</a></li> 
 
                     }
+
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
                 <form asp-controller="Products" asp-action="Search" method="get" >
