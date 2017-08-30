@@ -7,23 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Data;
 using BangazonAuth.Models;
+using Microsoft.AspNetCore.Identity;
+using BangazonAuth.Models.ProductViewModels;
 
 namespace BangazonAuth.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationUser currentUser { get; set; }
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Order.Include(o => o.PaymentType);
-            return View(await applicationDbContext.ToListAsync());
+            ApplicationUser currentUser = await GetCurrentUserAsync();
+            ShoppingCartViewModel shoppingCart = new ShoppingCartViewModel(_context, currentUser);
+            return View(shoppingCart);
         }
 
         // GET: Orders/Details/5
@@ -156,5 +163,6 @@ namespace BangazonAuth.Controllers
         {
             return _context.Order.Any(e => e.OrderId == id);
         }
+        
     }
 }

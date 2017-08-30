@@ -1,47 +1,42 @@
-@model IEnumerable<BangazonAuth.Models.Order>
+@model BangazonAuth.Models.ProductViewModels.ShoppingCartViewModel
 
-@{
-    ViewData["Title"] = "Index";
+<h2>@Model.User.FirstName @Model.User.LastName's Shopping Cart</h2>
+
+@if (Model.Products.Count() == 0)
+{
+    <p>There are no items in your cart!.</p>
 }
-
-<h2>Index</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+else
+{
 <table class="table">
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.CustomerId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DateCreated)
+                    Product
                 </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaymentType)
+                Quantity
+            </th>
+            <th>
+                Price
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model.Products)
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CustomerId)
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentType.AccountNumber)
-            </td>
-            <td>
+            @*<td>
                 <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-            </td>
+            </td>*@
         </tr>
-}
+    }
     </tbody>
 </table>
+}
