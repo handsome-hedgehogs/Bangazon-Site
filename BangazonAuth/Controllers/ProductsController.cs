@@ -81,7 +81,7 @@ namespace BangazonAuth.Controllers
         [Authorize]
         public async Task<IActionResult> Create()
         {
-            ProductCreateViewModel model = new ProductCreateViewModel(_context);
+            ProductCreateViewModel model = new ProductCreateViewModel(_context, _currentUser);
 
             // Get current user
             var user = await GetCurrentUserAsync();
@@ -114,7 +114,7 @@ namespace BangazonAuth.Controllers
                 return RedirectToAction("Index");
             }
 
-            ProductCreateViewModel model = new ProductCreateViewModel(_context);
+            ProductCreateViewModel model = new ProductCreateViewModel(_context, _currentUser);
             return View(model);
         }
 
