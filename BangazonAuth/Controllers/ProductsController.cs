@@ -16,7 +16,7 @@ namespace BangazonAuth.Controllers
     public class ProductsController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private ApplicationUser _currentUser;
         private ApplicationDbContext _context;
         public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
@@ -35,6 +35,7 @@ namespace BangazonAuth.Controllers
             // Set the properties of the view model
             model.Products = await _context.Product.ToListAsync();
             return View(model);
+
         }
 
         public async Task<IActionResult> Detail([FromRoute]int? id)
@@ -44,14 +45,11 @@ namespace BangazonAuth.Controllers
             {
                 return NotFound();
             }
-
+            _currentUser = await GetCurrentUserAsync();
             // Create new instance of view model
-            ProductDetailViewModel model = new ProductDetailViewModel();
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, id);
 
-            // Set the `Product` property of the view model
-            model.Product = await _context.Product
-                    .Include(prod => prod.User)
-                    .SingleOrDefaultAsync(prod => prod.ProductId == id);
+            
 
             // If product not found, return 404
             if (model.Product == null)
