@@ -118,7 +118,8 @@ namespace BangazonAuth.Controllers
                     LastName = "admin",
                     StreetAddress = "123 Infinity Way",
                     UserName = "admin@admin.com",
-                    Email = "admin@admin.com"
+                    Email = "admin@admin.com",
+                    PhoneNumber ="6154951457"
                 };
 
                 // Attempt to create the user in the database
@@ -151,6 +152,7 @@ namespace BangazonAuth.Controllers
                     UserName = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
                     StreetAddress = model.StreetAddress,
                     Email = model.Email
                 };
