@@ -79,6 +79,19 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> OfType(string searchString)
+        {
+            ProductListViewModel model = new ProductListViewModel();
+
+           
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model.Products = await _context.Product.Where(p => p.ProductType.Label.Equals(searchString)).ToListAsync();
+            }
+            return View(model);
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Create()
