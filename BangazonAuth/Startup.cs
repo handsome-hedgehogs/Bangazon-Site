@@ -79,6 +79,7 @@ namespace BangazonAuth
 
             app.UseMvc(routes =>
             {
+                //Routes OfType method in Products controller to specific url
                 routes.MapRoute("ProductsOfType", "Products/OfType/{searchString}",
                 defaults: new { controller = "Products", action = "OfType", searchString = "id" });
                 //Routes Search method in Products controller to specific url
