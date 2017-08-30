@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System;
 
-
 namespace BangazonAuth.Controllers
 {
     public class ProductsController : Controller
@@ -60,6 +59,23 @@ namespace BangazonAuth.Controllers
                 return NotFound();
             }
 
+            return View(model);
+        }
+        
+        //Author: Willie Pruitt
+        //Filters and Displays List of products based on user input {searchString}
+        public async Task<IActionResult> Search(string searchString)
+        {
+            ProductListViewModel model = new ProductListViewModel();
+
+
+            model.Products = await _context.Product
+                .ToListAsync();
+            //If search param not empty or null, search if Product description or title contains input
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model.Products = model.Products.Where(p => p.Description.Contains(searchString) || p.Title.Contains(searchString));
+            }
             return View(model);
         }
 

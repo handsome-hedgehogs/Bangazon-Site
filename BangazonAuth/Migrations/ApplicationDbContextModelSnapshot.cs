@@ -198,6 +198,7 @@ namespace BangazonAuth.Migrations
             });
 
             modelBuilder.Entity("BangazonAuth.Models.Rating", b =>
+
             {
                 b.Property<int>("RatingId")
                     .ValueGeneratedOnAdd();
@@ -245,6 +246,7 @@ namespace BangazonAuth.Migrations
             });
 
             modelBuilder.Entity("BangazonAuth.Models.UserLikes", b =>
+
             {
                 b.Property<int>("UserLikeId")
                     .ValueGeneratedOnAdd();
@@ -406,6 +408,7 @@ namespace BangazonAuth.Migrations
             });
 
             modelBuilder.Entity("BangazonAuth.Models.Product", b =>
+
             {
                 b.HasOne("BangazonAuth.Models.ProductType", "ProductType")
                     .WithMany()
