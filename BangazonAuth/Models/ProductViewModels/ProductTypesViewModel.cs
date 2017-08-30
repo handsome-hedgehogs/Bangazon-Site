@@ -1,10 +1,4 @@
 ﻿using System.Collections.Generic;
-<<<<<<< HEAD
-
-=======
-using BangazonAuth.Models;
-using BangazonAuth.Data;
->>>>>>> wp-pullviews
 
 namespace BangazonAuth.Models.ProductViewModels
 {
