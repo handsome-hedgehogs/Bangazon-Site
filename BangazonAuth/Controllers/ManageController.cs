@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using BangazonAuth.Models;
 using BangazonAuth.Models.ManageViewModels;
 using BangazonAuth.Services;
-
+using BangazonAuth.Data;
 
 namespace BangazonAuth.Controllers
 {
@@ -19,6 +19,7 @@ namespace BangazonAuth.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
         private readonly string _externalCookieScheme;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
@@ -45,6 +46,7 @@ namespace BangazonAuth.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
+
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
@@ -59,13 +61,20 @@ namespace BangazonAuth.Controllers
             {
                 return View("Error");
             }
-            var model = new IndexViewModel
+            var model = new IndexViewModel(_context)
             {
+                
                 HasPassword = await _userManager.HasPasswordAsync(user),
+                FirstName =  user.FirstName,
+                LastName = user.LastName,
+                Address = user.StreetAddress,
+                Email = user.Email,
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
                 Logins = await _userManager.GetLoginsAsync(user),
                 BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+            
+                
             };
             return View(model);
         }
