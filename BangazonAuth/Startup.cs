@@ -79,9 +79,12 @@ namespace BangazonAuth
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute("Products", "Products/Search/{*id}",
+                    defaults: new { controller = "Products", action = "Search", id = "id" });
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                
             });
         }
     }

@@ -61,7 +61,7 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
-
+      
         public async Task<IActionResult> Search(string searchString)
         {
             ProductListViewModel model = new ProductListViewModel();

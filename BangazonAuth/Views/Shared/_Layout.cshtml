@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -35,6 +35,12 @@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
+            <form asp-controller="Products" asp-action="Search" method="get">
+                <p>
+                    Title: <input type="text" name="SearchString"/>
+                    <input type="submit" value="Search" />
+                </p>
+            </form>
         </div>
     </div>
     <div class="container body-content">
