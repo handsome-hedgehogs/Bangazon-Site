@@ -24,7 +24,7 @@ namespace BangazonAuth.Controllers
         {
             ProductListViewModel model = new ProductListViewModel();
 
-            model.Products = await _context.Product.OrderByDescending(p => p.DateCreated).Take(count: 20).ToListAsync();
+            model.Products = await _context.Product.OrderByDescending(p => p.DateCreated).Take(20).ToListAsync();
 
             return View(model);
         }
