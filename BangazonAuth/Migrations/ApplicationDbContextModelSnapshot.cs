@@ -8,10 +8,9 @@ using BangazonAuth.Data;
 namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170830165742_NewContext")]
-    partial class NewContext
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -81,8 +80,7 @@ namespace BangazonAuth.Migrations
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime>("DateCreated");
 
                     b.Property<int?>("PaymentTypeId");
 
@@ -126,7 +124,8 @@ namespace BangazonAuth.Migrations
                         .HasMaxLength(20);
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -251,18 +250,18 @@ namespace BangazonAuth.Migrations
                     b.Property<int>("UserLikeId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired();
-
                     b.Property<bool>("Like");
 
                     b.Property<int>("ProductId");
 
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
                     b.HasKey("UserLikeId");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserLikes");
                 });
@@ -381,87 +380,74 @@ namespace BangazonAuth.Migrations
                         .HasForeignKey("PaymentTypeId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.OrderProduct", b =>
                 {
                     b.HasOne("BangazonAuth.Models.Order", "Order")
                         .WithMany("OrderProducts")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("OrderId");
 
                     b.HasOne("BangazonAuth.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.PaymentType", b =>
                 {
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("PaymentTypes")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.Product", b =>
                 {
                     b.HasOne("BangazonAuth.Models.ProductType", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Products")
+                        .HasForeignKey("ProductTypeId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Products")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.Rating", b =>
                 {
                     b.HasOne("BangazonAuth.Models.Product", "Product")
                         .WithMany("Ratings")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
                         .WithMany("Ratings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.Recommendations", b =>
                 {
                     b.HasOne("BangazonAuth.Models.Product", "Product")
                         .WithMany("Recommended")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "Recommendee")
-                        .WithMany()
-                        .HasForeignKey("RecommendeeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("RecommendedToMe")
+                        .HasForeignKey("RecommendeeId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "Recommender")
-                        .WithMany()
-                        .HasForeignKey("RecommenderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("RecommendedByMe")
+                        .HasForeignKey("RecommenderId");
                 });
 
             modelBuilder.Entity("BangazonAuth.Models.UserLikes", b =>
                 {
-                    b.HasOne("BangazonAuth.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("UserLiked")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("BangazonAuth.Models.Product", "Product")
                         .WithMany("UserLiked")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
+                        .WithMany("UserLiked")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

@@ -81,7 +81,7 @@ namespace BangazonAuth.Controllers
                 */
 
                 _context.Order.Add(newOrder);
-                _context..Add(newOrderProduct);
+                _context.OrderProduct.Add(newOrderProduct);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
