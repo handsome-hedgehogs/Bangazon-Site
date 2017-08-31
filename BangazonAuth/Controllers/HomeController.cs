@@ -18,6 +18,8 @@ namespace BangazonAuth.Controllers
             _context = ctx;
         }
 
+        //Author: Willie Pruitt
+        //Filters and Displays List of last 20 created products
         public async Task<IActionResult> Index()
         {
             ProductListViewModel model = new ProductListViewModel();
