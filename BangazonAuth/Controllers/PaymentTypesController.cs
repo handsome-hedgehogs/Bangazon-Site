@@ -7,16 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Models;
 using BangazonAuth.Data;
+using Microsoft.AspNetCore.Identity;
+using BangazonAuth.Models.ManageViewModels;
+using BangazonAuth.Controllers;
 
 namespace BangazonAuth.Controllers
 {
     public class PaymentTypesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationDbContext _context;
+        
 
-        public PaymentTypesController(ApplicationDbContext context)
+        // This task retrieves the currently authenticated user
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        public PaymentTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
+            
         }
 
         // GET: PaymentTypes
@@ -44,25 +54,29 @@ namespace BangazonAuth.Controllers
         }
 
         // GET: PaymentTypes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var user = await GetCurrentUserAsync();
             return View();
         }
 
         // POST: PaymentTypes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentTypeId,DateCreated,Description,AccountNumber")] PaymentType paymentType)
+        public async Task<IActionResult> Create(PaymentType payment)
         {
+            payment.DateCreated = DateTime.Now;
+            ModelState.Remove("User");
+            
             if (ModelState.IsValid)
             {
-                _context.Add(paymentType);
+                var user = await GetCurrentUserAsync();
+                payment.User = user;
+                _context.Add(payment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(paymentType);
+            return View(payment);
         }
 
         // GET: PaymentTypes/Edit/5
@@ -88,6 +102,7 @@ namespace BangazonAuth.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PaymentTypeId,DateCreated,Description,AccountNumber")] PaymentType paymentType)
         {
+
             if (id != paymentType.PaymentTypeId)
             {
                 return NotFound();

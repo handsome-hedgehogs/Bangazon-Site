@@ -8,9 +8,10 @@ using BangazonAuth.Data;
 namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170830215027_POOP")]
+    partial class POOP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -124,8 +125,6 @@ namespace BangazonAuth.Migrations
                     b.Property<string>("AccountNumber")
                         .IsRequired()
                         .HasMaxLength(20);
-
-                    b.Property<DateTime>("DateCreated");
 
                     b.Property<string>("Description")
                         .IsRequired()

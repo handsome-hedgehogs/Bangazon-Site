@@ -28,9 +28,6 @@ namespace BangazonAuth.Data
             builder.Entity<Order>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
-            builder.Entity<PaymentType>()
-                .Property(b => b.DateCreated)
-                .HasDefaultValueSql("GETDATE()");
         }
 
       

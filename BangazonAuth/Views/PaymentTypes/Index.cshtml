@@ -1,4 +1,4 @@
-@model IEnumerable<Bangazon.Models.PaymentType>
+@model IEnumerable<BangazonAuth.Models.PaymentType>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,9 +13,6 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.DateCreated)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.Description)
                 </th>
                 <th>
@@ -27,9 +24,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
