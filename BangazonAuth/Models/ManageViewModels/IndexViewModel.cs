@@ -20,7 +20,6 @@ namespace BangazonAuth.Models.ManageViewModels
 
         public ICollection<Product> Products { get; set; }
 
-        List<PaymentType> Poop { get; set; }
 
         public IndexViewModel()
         {

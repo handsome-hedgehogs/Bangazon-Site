@@ -36,7 +36,7 @@ namespace BangazonAuth.Controllers
         }
 
         // GET: PaymentTypes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -44,7 +44,7 @@ namespace BangazonAuth.Controllers
             }
 
             var paymentType = await _context.PaymentType
-                .SingleOrDefaultAsync(m => m.PaymentTypeId == id);
+                .SingleOrDefaultAsync(m => m.User.Id == id);
             if (paymentType == null)
             {
                 return NotFound();
