@@ -33,7 +33,7 @@
                     @if (Context.User.Identity.IsAuthenticated)
                     {
                     
-                    <li><a href="/types">Product Categories</a></li>                   
+                    <li><a asp-controller="ProductTypes" asp-action="Index">Product Categories</a></li>                   
                     <li><a asp-area="Account" asp-controller="Products" asp-action="Create">Sell A Product</a></li> 
 
                     }
