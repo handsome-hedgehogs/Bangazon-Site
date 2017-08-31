@@ -24,7 +24,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
