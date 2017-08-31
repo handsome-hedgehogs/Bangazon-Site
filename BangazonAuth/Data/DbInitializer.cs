@@ -17,10 +17,10 @@ namespace BangazonAuth.Data
             using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
                 // Look for any products.
-                //if (context.ProductType.Any())
-                //{
-                  //  return;   // DB has been seeded
-                //}
+                if (context.ProductType.Any())
+                {
+                    return;   // DB has been seeded
+                }
 
                 var productTypes = new ProductType[]
                 {
@@ -35,11 +35,11 @@ namespace BangazonAuth.Data
                     },
                 };
 
-                //foreach (ProductType i in productTypes)
-                //{
-                //    context.ProductType.Add(i);
-                //}
-                //context.SaveChanges();
+                foreach (ProductType i in productTypes)
+                {
+                    context.ProductType.Add(i);
+                }
+                context.SaveChanges();
             }
        }
     }
