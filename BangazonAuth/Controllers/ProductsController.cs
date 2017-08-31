@@ -69,8 +69,8 @@ namespace BangazonAuth.Controllers
         {
             ModelState.Remove("product.User");
             var user = await GetCurrentUserAsync();
-            Order newOrder = new Order() { User = user };
-            OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId=product.ProductId };
+            
+            
             
             if (ModelState.IsValid)
             {
@@ -79,8 +79,9 @@ namespace BangazonAuth.Controllers
                     currently authenticated user and assign it to the 
                     product before adding it to the db _context
                 */
-
+                Order newOrder = new Order() { User = user };
                 _context.Order.Add(newOrder);
+                OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
                 _context.OrderProduct.Add(newOrderProduct);
 
                 await _context.SaveChangesAsync();
