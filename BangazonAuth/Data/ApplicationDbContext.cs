@@ -45,5 +45,7 @@ namespace BangazonAuth.Data
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
    
         public DbSet<Rating> Rating { get; set; }
+
+        public DbSet<OrderProduct> OrderProduct { get; set; }
     }
 }
