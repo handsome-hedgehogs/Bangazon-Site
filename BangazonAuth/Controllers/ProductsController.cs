@@ -92,17 +92,20 @@ namespace BangazonAuth.Controllers
 
         //Author: Willie Pruitt
         //Filters and Displays List of products based on user input {searchString}
-        public async Task<IActionResult> Search(string searchString)
+        public async Task<IActionResult> Search(string searchBy, string searchString)
         {
             ProductListViewModel model = new ProductListViewModel();
-
 
             model.Products = await _context.Product
                 .ToListAsync();
             //If search param not empty or null, search if Product description or title contains input
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString) && searchBy.Equals("Product"))
             {
-                model.Products = model.Products.Where(p => p.Description.Contains(searchString) || p.Title.Contains(searchString));
+                model.Products = model.Products.Where(p => p.Description.ToLower().Contains(searchString.ToLower()) || p.Title.ToLower().Contains(searchString.ToLower()));
+            }
+            else if (!string.IsNullOrEmpty(searchString) && searchBy.Equals("LocalDelivery"))
+            {
+                model.Products = model.Products.Where(p => p.LocalDelivery.Equals(true) && p.Location.ToLower().Contains(searchString.ToLower()));
             }
             return View(model);
         }
