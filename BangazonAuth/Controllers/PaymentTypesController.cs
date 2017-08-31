@@ -38,13 +38,14 @@ namespace BangazonAuth.Controllers
         // GET: PaymentTypes/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            var user = await GetCurrentUserAsync();
             if (id == null)
             {
                 return NotFound();
             }
 
             var paymentType = await _context.PaymentType
-                .SingleOrDefaultAsync(m => m.User.Id == id);
+                .Where(m => m.User == user).ToListAsync();
             if (paymentType == null)
             {
                 return NotFound();
@@ -74,7 +75,7 @@ namespace BangazonAuth.Controllers
                 payment.User = user;
                 _context.Add(payment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Manage");
             }
             return View(payment);
         }

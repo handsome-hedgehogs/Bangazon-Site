@@ -1,4 +1,4 @@
-@model BangazonAuth.Models.PaymentType
+@model IEnumerable<BangazonAuth.Models.PaymentType>
 
 @{
     ViewData["Title"] = "Details";
@@ -6,31 +6,40 @@
 
 <h2>Details</h2>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCreated)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @item.AccountNumber
+                </td>
+                <td>
+                    @item.DateCreated
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.PaymentTypeId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 <div>
-    <h4>PaymentType</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AccountNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AccountNumber)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.PaymentTypeId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Manage" asp-action="Index">Back to List</a>
 </div>

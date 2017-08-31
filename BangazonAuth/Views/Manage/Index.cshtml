@@ -29,7 +29,7 @@
         </dd>
     </dl>
     <div>
-        <a asp-controller="PaymentTypes" asp-action="Details" >Saved Payment Methods</a> 
+        <a asp-controller="PaymentTypes" asp-action="Details" asp-route-id="@Model.AppUser.Id">Saved Payment Methods</a> 
         <br />
         <a asp-controller="PaymentTypes" asp-action="Create" >Add Method of Payment</a>
         <br />
