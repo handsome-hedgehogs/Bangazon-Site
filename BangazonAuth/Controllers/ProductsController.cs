@@ -38,7 +38,7 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Detail([FromRoute]int? id)
+        public async Task<IActionResult> Details([FromRoute]int? id)
         {
             // If no id was in the route, return 404
             if (id == null)
