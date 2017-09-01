@@ -54,6 +54,10 @@ namespace BangazonAuth.Controllers
 
 
         // GET: Orders/OrderHX/5
+        // View passes current user ID
+        // queries Order table for user ID and a Payment Type
+        // If Payment is not null then it is a completed order
+        // Authored by : Tamela Lerma
         public async Task<IActionResult> OrderHX(string id)
         {        
             var user = await GetCurrentUserAsync();
@@ -74,21 +78,14 @@ namespace BangazonAuth.Controllers
 
 
         // GET: Orders/CompletedOrderDetail/5
+        // Create Instance of ViewModel ProductOrderDetailViewModel
+        // OrderId is passed in from OrderHX Razor view
+        // VM also needs argument of DBContext to query Database
+        // Returns a list of Products for one order
+        // Authored by : Tamela Lerma
         public IActionResult CompletedOrderDetail(int? id)
         {
             ProductOrderDetailViewModel prodViewModel = new ProductOrderDetailViewModel(id, _context);
-
-            //prodViewModel = new ProductOrderDetailViewModel
-            //{
-            //    Products = await (from op in _context.OrderProduct
-            //                      where op.OrderId == id
-            //                      join p in _context.Product
-            //                      on op.ProductId equals p.ProductId
-            //                      join pt in _context.ProductType
-            //                      on p.ProductTypeId equals pt.ProductTypeId
-            //                      select p).ToListAsync()
-            //};
-            //prodViewModel.Total = (from x in prodViewModel.Products select x.Price).Sum();
 
             if (id == null)
             {
