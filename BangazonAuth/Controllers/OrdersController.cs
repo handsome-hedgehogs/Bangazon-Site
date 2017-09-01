@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Data;
 using BangazonAuth.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BangazonAuth.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
+
+        // This task retrieves the currently authenticated user
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Orders
         public async Task<IActionResult> Index()
@@ -43,6 +49,26 @@ namespace BangazonAuth.Controllers
             }
 
             return View(order);
+        }
+
+
+        // GET: Orders/OrderHX/5
+        public async Task<IActionResult> OrderHX(string id)
+        {
+            var user = await GetCurrentUserAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var orders = await _context.Order
+                .Where(m => m.User == user && m.PaymentTypeId != null).ToListAsync();
+            if (orders == null)
+            {
+                return NotFound();
+            }
+
+            return View(orders);
         }
 
         // GET: Orders/Create

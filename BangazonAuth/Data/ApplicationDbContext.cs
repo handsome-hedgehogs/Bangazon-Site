@@ -47,8 +47,6 @@ namespace BangazonAuth.Data
             builder.Entity<Product>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
-<<<<<<< HEAD
-=======
             builder.Entity<Product>()
                 .HasMany(o => o.OrderProducts)
                 .WithOne(l => l.Product)
@@ -94,9 +92,7 @@ namespace BangazonAuth.Data
             builder.Entity<ApplicationUser>()
                 .HasMany(u => u.RecommendedToMe)
                 .WithOne(o => o.Recommendee)
-                .OnDelete(DeleteBehavior.Restrict);
-            
->>>>>>> ef13f0bcafe4cdff760348ae29bd4695dcd8d1f9
+                .OnDelete(DeleteBehavior.Restrict);        
         }
       
         public DbSet<ProductType> ProductType { get; set; }
