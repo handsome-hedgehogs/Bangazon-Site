@@ -19,7 +19,7 @@ namespace BangazonAuth.Models
 
         [Required]
         [DataType(DataType.DateTime)]
-        [Display(Name = "Order Date")]
+        [Display(Name = "Date Created")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime DateCreated { get; set; }
 

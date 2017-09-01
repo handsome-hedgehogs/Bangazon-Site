@@ -60,8 +60,6 @@ namespace BangazonAuth.Models
     }
 
     public ICollection<Rating> Ratings { get; set; }
-
-    public ICollection<OrderProduct> OrderProducts { get; set; }
     
     public ICollection<Recommendations> Recommended { get; set; }
     
