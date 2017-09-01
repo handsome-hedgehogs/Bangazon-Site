@@ -162,6 +162,8 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
+
+
         public async Task<IActionResult> Types()
         {
             var model = new ProductTypesViewModel();
@@ -182,6 +184,27 @@ namespace BangazonAuth.Controllers
                                         }).ToListAsync();
 
             return View(model);
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ProductStatus(MyProductsViewModel myProducts)
+        {
+            var user = await GetCurrentUserAsync();
+            myProducts = new MyProductsViewModel
+            {
+                Products = await (from p in _context.Product
+                                  where p.User == user
+                                  join ot in _context.OrderProduct
+                                  on p.ProductId equals ot.ProductId
+                                  join o in _context.Order
+                                  on ot.OrderId equals o.OrderId
+                                  where o.PaymentType != null
+                                  select p).ToListAsync()
+            };
+            
+            return View(myProducts.Products);                        
         }
 
         public IActionResult Error()

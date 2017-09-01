@@ -1,0 +1,54 @@
+@model IEnumerable<BangazonAuth.Models.ProductViewModels.MyProductsViewModel>
+@{
+    ViewData["Title"] = "MyProducts";
+}
+
+<h2>MyProducts</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Product")
+            </th>
+            <th>
+                @Html.DisplayName("Current Inventory")
+            </th>
+            <th>
+                @Html.DisplayName("Number Sold")
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in @Model.Products)
+        {
+            <tr>
+                <td>
+                   
+                </td>
+                <td>
+                    @item.Price.ToString("C")
+                </td>
+            </tr>
+        }
+    </tbody>
+    <thead>
+        <tr>
+            <th></th>
+            <th>@Html.DisplayName("Total")</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>@Model.Total.ToString("C")</td>
+        </tr>
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="Manage" asp-action="Index">Back to Profile</a>
+</div>
