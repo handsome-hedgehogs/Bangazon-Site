@@ -51,8 +51,6 @@ namespace BangazonAuth.Controllers
             // Create new instance of view model
             ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, id);
 
-            
-
             // If product not found, return 404
             if (model.Product == null)
             {

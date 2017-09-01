@@ -7,34 +7,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Models;
 using BangazonAuth.Data;
+using Microsoft.AspNetCore.Identity;
+using BangazonAuth.Models.ManageViewModels;
+using BangazonAuth.Controllers;
 
 namespace BangazonAuth.Controllers
 {
     public class PaymentTypesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationDbContext _context;
+        
 
-        public PaymentTypesController(ApplicationDbContext context)
+        // This task retrieves the currently authenticated user
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        public PaymentTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
+            
         }
 
-        // GET: PaymentTypes
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.PaymentType.ToListAsync());
-        }
 
         // GET: PaymentTypes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // Authored by : Tamela Lerma
+        public async Task<IActionResult> Details(string id)
         {
+            var user = await GetCurrentUserAsync();
             if (id == null)
             {
                 return NotFound();
             }
-
+            // Where User is equal to current user, return a list
+            // used on Detail.cshtml 
             var paymentType = await _context.PaymentType
-                .SingleOrDefaultAsync(m => m.PaymentTypeId == id);
+                .Where(m => m.User == user).ToListAsync();
             if (paymentType == null)
             {
                 return NotFound();
@@ -44,79 +52,41 @@ namespace BangazonAuth.Controllers
         }
 
         // GET: PaymentTypes/Create
-        public IActionResult Create()
+        // Authored by: Tamela Lerma
+        public async Task<IActionResult> Create()
         {
+            var user = await GetCurrentUserAsync();
             return View();
         }
 
         // POST: PaymentTypes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Authored by : Tamela Lerma
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentTypeId,DateCreated,Description,AccountNumber")] PaymentType paymentType)
+        public async Task<IActionResult> Create(PaymentType payment)
         {
+            // create new date
+            payment.DateCreated = DateTime.Now;
+            //must remove User from Model to insert current user
+            // The model being passed in has null for User
+            ModelState.Remove("User");
+            
             if (ModelState.IsValid)
             {
-                _context.Add(paymentType);
+                var user = await GetCurrentUserAsync();
+                payment.User = user;
+                _context.Add(payment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                // redirect to view Index for ManageControler
+                return RedirectToAction("Index", "Manage");
             }
-            return View(paymentType);
+            return View(payment);
         }
 
-        // GET: PaymentTypes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var paymentType = await _context.PaymentType.SingleOrDefaultAsync(m => m.PaymentTypeId == id);
-            if (paymentType == null)
-            {
-                return NotFound();
-            }
-            return View(paymentType);
-        }
-
-        // POST: PaymentTypes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaymentTypeId,DateCreated,Description,AccountNumber")] PaymentType paymentType)
-        {
-            if (id != paymentType.PaymentTypeId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(paymentType);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PaymentTypeExists(paymentType.PaymentTypeId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(paymentType);
-        }
 
         // GET: PaymentTypes/Delete/5
+        // pass in PaymenTypeId
+        // Authored by : Tamela Lerma
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,6 +105,9 @@ namespace BangazonAuth.Controllers
         }
 
         // POST: PaymentTypes/Delete/5
+        // Delete from table using PaymentTypeId
+        // redirect to Index.cshtml using ManageController upon completion
+        // Authored by : Tamela Lerma
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -142,7 +115,7 @@ namespace BangazonAuth.Controllers
             var paymentType = await _context.PaymentType.SingleOrDefaultAsync(m => m.PaymentTypeId == id);
             _context.PaymentType.Remove(paymentType);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Manage");
         }
 
         private bool PaymentTypeExists(int id)
