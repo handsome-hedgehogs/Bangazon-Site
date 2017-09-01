@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 using BangazonAuth.Models;
 using BangazonAuth.Models.ManageViewModels;
 using BangazonAuth.Services;
+using BangazonAuth.Data;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace BangazonAuth.Controllers
@@ -19,12 +21,14 @@ namespace BangazonAuth.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
         private readonly string _externalCookieScheme;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public ManageController(
+          ApplicationDbContext ctx,
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           IOptions<IdentityCookieOptions> identityCookieOptions,
@@ -38,13 +42,17 @@ namespace BangazonAuth.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
+            _context = ctx;
         }
 
         //
         // GET: /Manage/Index
+        // CreatedAtActionResult Instance of IndexViewModel to access user info
+        // Authored by : Tamela Lerma
         [HttpGet]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
+
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
@@ -59,13 +67,9 @@ namespace BangazonAuth.Controllers
             {
                 return View("Error");
             }
-            var model = new IndexViewModel
+            var model = new IndexViewModel()
             {
-                HasPassword = await _userManager.HasPasswordAsync(user),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
-                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
-                Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                AppUser = user    
             };
             return View(model);
         }
@@ -342,6 +346,94 @@ namespace BangazonAuth.Controllers
             return RedirectToAction(nameof(ManageLogins), new { Message = message });
         }
 
+        // GET: ApplicationUser Profile/Edit/5
+        // ID for Application user is a string, pass that into method from Index.cshtml for Manage Views
+        // ViewComponent Redirects to EditProfile.cshtml
+        // Create instance of IndexViewModel
+        // Authored by : Tamela Lerma
+        public async Task<IActionResult> EditProfile(string id)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            IndexViewModel User = new IndexViewModel()
+            {
+                AppUser = user
+            };
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (User.AppUser == null)
+            {
+                return NotFound();
+            }
+            return View(User);
+        }
+
+
+        // POST: Update ApplicationUser Profile/Edit/5
+        // To update to DB pass in the ApplicationUser ID which is a string
+        // also pass in instance of View Model to set the new Values on the form
+        // if the Model is valid the return current user
+        // set each column to be updated in table to that is passed from view model
+        // Authored by : Tamela Lerma
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(string id,  IndexViewModel indexVM)
+        {
+            if (indexVM == null)
+            {
+                throw new ArgumentNullException(nameof(indexVM));
+            }
+
+            var user = await GetCurrentUserAsync();
+            user.FirstName = indexVM.AppUser.FirstName;
+            user.LastName = indexVM.AppUser.LastName;
+            user.StreetAddress = indexVM.AppUser.StreetAddress;
+            user.PhoneNumber = indexVM.AppUser.PhoneNumber;
+
+
+            if (id != user.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ApplicationUserExists(indexVM.AppUser.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View("Index");
+        }
+
+        // method used in EditProfile Post to see if the user ID exists in the DataBase
+        // Authored by : Tamela Lerma
+        private bool ApplicationUserExists(string id)
+        {
+            return _context.ApplicationUser.Any(e => e.Id == id);
+        }
+
         #region Helpers
 
         private void AddErrors(IdentityResult result)
@@ -370,5 +462,7 @@ namespace BangazonAuth.Controllers
         }
 
         #endregion
+
     }
 }
+

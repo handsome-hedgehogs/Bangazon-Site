@@ -11,13 +11,12 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System;
 
-
 namespace BangazonAuth.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private ApplicationUser _currentUser;
         private ApplicationDbContext _context;
         public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
@@ -36,8 +35,11 @@ namespace BangazonAuth.Controllers
             // Set the properties of the view model
             model.Products = await _context.Product.ToListAsync();
             return View(model);
+
         }
 
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Detail([FromRoute]int? id)
         {
             // If no id was in the route, return 404
@@ -45,14 +47,11 @@ namespace BangazonAuth.Controllers
             {
                 return NotFound();
             }
-
+            _currentUser = await GetCurrentUserAsync();
             // Create new instance of view model
-            ProductDetailViewModel model = new ProductDetailViewModel();
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, id);
 
-            // Set the `Product` property of the view model
-            model.Product = await _context.Product
-                    .Include(prod => prod.User)
-                    .SingleOrDefaultAsync(prod => prod.ProductId == id);
+            
 
             // If product not found, return 404
             if (model.Product == null)
@@ -63,11 +62,75 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
+        //Written by: Eliza Meeks
+        //Adds products to order fromt he product detail view
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Detail(Product product)
+        {
+            ModelState.Remove("product.User");
+            var user = await GetCurrentUserAsync();
+            
+            
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                    
+                }
+                catch
+                {
+                    Order newOrder = new Order() { User = user };
+                    _context.Order.Add(newOrder);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                }
+                
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
+            return View(model);
+        }
+
+        //Author: Willie Pruitt
+        //Filters and Displays List of products based on user input {searchString}
+        public async Task<IActionResult> Search(string searchString)
+        {
+            ProductListViewModel model = new ProductListViewModel();
+
+
+            model.Products = await _context.Product
+                .ToListAsync();
+            //If search param not empty or null, search if Product description or title contains input
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model.Products = model.Products.Where(p => p.Description.Contains(searchString) || p.Title.Contains(searchString));
+            }
+            return View(model);
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Create()
         {
-            ProductCreateViewModel model = new ProductCreateViewModel(_context);
+            ProductCreateViewModel model = new ProductCreateViewModel(_context, _currentUser);
 
             // Get current user
             var user = await GetCurrentUserAsync();
@@ -100,7 +163,7 @@ namespace BangazonAuth.Controllers
                 return RedirectToAction("Index");
             }
 
-            ProductCreateViewModel model = new ProductCreateViewModel(_context);
+            ProductCreateViewModel model = new ProductCreateViewModel(_context, _currentUser);
             return View(model);
         }
 

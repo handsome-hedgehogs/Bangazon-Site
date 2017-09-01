@@ -75,13 +75,19 @@ namespace BangazonAuth
 
             app.UseIdentity();
 
+            DbInitializer.Initialize(app.ApplicationServices);
+
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
             {
+                //Routes Search method in Products controller to specific url
+                routes.MapRoute("Products", "Products/Search/{*id}",
+                    defaults: new { controller = "Products", action = "Search", id = "id" });
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                
             });
         }
     }

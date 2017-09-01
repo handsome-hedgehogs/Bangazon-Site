@@ -22,6 +22,12 @@ namespace BangazonAuth.Models.AccountViewModels
         public string LastName { get; set; }
 
         [Required]
+        [Display(Name = "Phone")]
+        [DataType(DataType.PhoneNumber)]
+        public string PhoneNumber { get; set; }
+
+
+        [Required]
         [Display(Name = "Street Address")]
         public string StreetAddress { get; set; }
 
