@@ -110,6 +110,21 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
+        //Author: Willie Pruitt
+        //Filters and Displays List of products based on user input {searchString}
+        public async Task<IActionResult> OfType(string searchString)
+        {
+            ProductListViewModel model = new ProductListViewModel();
+
+           
+            //If search param not empty or null, search for Products with Product type equal to input
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model.Products = await _context.Product.Where(p => p.ProductType.Label.Equals(searchString)).ToListAsync();
+            }
+            return View(model);
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Create()
