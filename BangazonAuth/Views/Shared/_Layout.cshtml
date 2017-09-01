@@ -17,7 +17,7 @@
     </environment>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="padding-bottom: 10px;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -40,7 +40,11 @@
 
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
-                <form asp-controller="Products" asp-action="Search" method="get" >
+            </div>
+        </div>
+        <div class="container">
+            <div class="navbar-header">
+                <form asp-controller="Products" asp-action="Search" method="get">
                     <ul class="nav navbar-nav">
                         <li>
                             <select name="SearchBy">
@@ -51,13 +55,11 @@
                         <li><input type="text" name="SearchString" /></li>
                         <li><input type="submit" value="Search" /></li>
                     </ul>
-                    
                 </form>
-                
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container body-content" style="padding-top: 30px">
         @RenderBody()
         <hr />
         <footer>
