@@ -1,0 +1,22 @@
+@model BangazonAuth.Models.ProductViewModels.ProductDetailViewModel
+
+@{
+    ViewData["Title"] = "CannotAddToOrder";
+}
+
+<h2>CannotAddToOrder</h2>
+
+<h3>You are selling this product you cannot add it to an order.</h3>
+<div>
+    <h4>@Model.Product.Title</h4>
+    <hr />
+    <dl class="dl-horizontal">
+    </dl>
+    
+    <form asp-action="CannotAddToOrder">
+        <div class="form-actions no-color">
+            <a asp-action="Detail">Back to @Model.Product.Title Details</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </form>
+</div>

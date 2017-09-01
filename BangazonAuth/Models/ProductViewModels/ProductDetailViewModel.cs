@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace BangazonAuth.Models.ProductViewModels
 {
-  public class ProductDetailViewModel
-  {
-    public Product Product { get; set; }
-    
-    public ProductDetailViewModel(ApplicationUser user, ApplicationDbContext ctx, int? id)
+    public class ProductDetailViewModel
+    {
+        public Product Product { get; set; }
+
+        public ProductDetailViewModel(ApplicationUser user, ApplicationDbContext ctx, int? id)
         {
             // Set the `Product` property of the view model
             Product = ctx.Product
@@ -15,5 +15,5 @@ namespace BangazonAuth.Models.ProductViewModels
             Product.ProductType = ctx.ProductType.SingleOrDefault(pt => pt.ProductTypeId == Product.ProductTypeId);
             Product.User = user;
         }
-  }
+    }
 }

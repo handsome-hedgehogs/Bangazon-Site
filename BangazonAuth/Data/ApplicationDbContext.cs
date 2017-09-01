@@ -17,10 +17,10 @@ namespace BangazonAuth.Data
             : base(options)
         {
         }
-    
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            
+
             base.OnModelCreating(builder);
 
             // Auto generating dates written by Jackie Knight and Eliza Meeks
@@ -37,8 +37,11 @@ namespace BangazonAuth.Data
                 .HasMany(o => o.OrderProducts)
                 .WithOne(l => l.Order)
                 .OnDelete(DeleteBehavior.Restrict);
-
+            
             //Product builder constraints
+            builder.Entity<Product>()
+                .Property(b => b.DateCreated)
+                .HasDefaultValueSql("GETDATE()");
             builder.Entity<Product>()
                 .HasMany(o => o.OrderProducts)
                 .WithOne(l => l.Product)
@@ -86,7 +89,7 @@ namespace BangazonAuth.Data
                 .WithOne(o => o.Recommendee)
                 .OnDelete(DeleteBehavior.Restrict);
         }
-      
+
         public DbSet<ProductType> ProductType { get; set; }
 
         public DbSet<Product> Product { get; set; }
@@ -96,7 +99,7 @@ namespace BangazonAuth.Data
         public DbSet<PaymentType> PaymentType { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-   
+
         public DbSet<Rating> Rating { get; set; }
 
         public DbSet<OrderProduct> OrderProduct { get; set; }

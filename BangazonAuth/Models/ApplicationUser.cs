@@ -12,11 +12,11 @@ namespace BangazonAuth.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        [Display(Name ="First Name")]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required]
-        [Display(Name ="Last Name")]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required]
@@ -36,4 +36,3 @@ namespace BangazonAuth.Models
         public ICollection<Recommendations> RecommendedToMe { get; set; }
     }
 }
-

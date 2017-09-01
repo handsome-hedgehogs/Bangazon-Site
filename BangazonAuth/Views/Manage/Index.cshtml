@@ -29,12 +29,12 @@
         </dd>
     </dl>
     <div>
-        <a asp-controller="PaymentTypes" asp-action="Details" asp-route-id="@Model.AppUser.Id">Saved Payment Methods</a> 
+        <a asp-controller="PaymentTypes" asp-action="Details" asp-route-id="@Model.AppUser.Id">Saved Payment Methods</a>
         <br />
-        <a asp-controller="PaymentTypes" asp-action="Create" >Add Method of Payment</a>
+        <a asp-controller="PaymentTypes" asp-action="Create">Add Method of Payment</a>
         <br />
-        <a asp-action="OrderHXDetail" asp-route-id="">Order History</a>
-    </div> 
+        <a asp-controller="Orders" asp-action="OrderHX" asp-route-id="@Model.AppUser.Id">Order History</a>
+    </div>
     <br />
     <a asp-action="EditProfile" asp-route-id="@Model.AppUser.Id" class="btn btn-default">Edit Profile</a>
 
