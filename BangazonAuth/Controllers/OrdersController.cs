@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Data;
 using BangazonAuth.Models;
 using Microsoft.AspNetCore.Identity;
+using BangazonAuth.Models.ProductViewModels;
 
 namespace BangazonAuth.Controllers
 {
@@ -54,7 +55,7 @@ namespace BangazonAuth.Controllers
 
         // GET: Orders/OrderHX/5
         public async Task<IActionResult> OrderHX(string id)
-        {
+        {        
             var user = await GetCurrentUserAsync();
             if (id == null)
             {
@@ -70,6 +71,33 @@ namespace BangazonAuth.Controllers
 
             return View(orders);
         }
+
+
+        // GET: Orders/CompletedOrderDetail/5
+        public async Task<IActionResult> CompletedOrderDetail(int? id)
+        {
+            ProductOrderDetailViewModel prodViewModel = new ProductOrderDetailViewModel(id, _context);
+
+            //prodViewModel = new ProductOrderDetailViewModel
+            //{
+            //    Products = await (from op in _context.OrderProduct
+            //                      where op.OrderId == id
+            //                      join p in _context.Product
+            //                      on op.ProductId equals p.ProductId
+            //                      join pt in _context.ProductType
+            //                      on p.ProductTypeId equals pt.ProductTypeId
+            //                      select p).ToListAsync()
+            //};
+            //prodViewModel.Total = (from x in prodViewModel.Products select x.Price).Sum();
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            return View(prodViewModel);
+        }
+
 
         // GET: Orders/Create
         public IActionResult Create()

@@ -25,7 +25,7 @@
         {
             <tr>
                 <td>
-                    <a>@item.OrderId</a>
+                    <a asp-controller="Orders" asp-action="CompletedOrderDetail" asp-route-id="@item.OrderId">@item.OrderId</a>
                 </td>
                 <td>
                     <a>@item.DateCreated</a>
