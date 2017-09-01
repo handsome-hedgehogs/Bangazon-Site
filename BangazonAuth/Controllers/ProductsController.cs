@@ -192,19 +192,10 @@ namespace BangazonAuth.Controllers
         public async Task<IActionResult> ProductStatus(MyProductsViewModel myProducts)
         {
             var user = await GetCurrentUserAsync();
-            myProducts = new MyProductsViewModel
-            {
-                Products = await (from p in _context.Product
-                                  where p.User == user
-                                  join ot in _context.OrderProduct
-                                  on p.ProductId equals ot.ProductId
-                                  join o in _context.Order
-                                  on ot.OrderId equals o.OrderId
-                                  where o.PaymentType != null
-                                  select p).ToListAsync()
-            };
+            myProducts = new MyProductsViewModel(_context, user);
+           
             
-            return View(myProducts.Products);                        
+            return View(myProducts);                        
         }
 
         public IActionResult Error()
