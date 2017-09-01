@@ -160,8 +160,6 @@ namespace BangazonAuth.Data
 
 
 
-
-
                 if (!context.Product.Any())
                 {
                     var products = new Product[]
