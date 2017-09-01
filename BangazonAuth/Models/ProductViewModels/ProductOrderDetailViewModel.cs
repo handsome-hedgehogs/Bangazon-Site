@@ -31,7 +31,7 @@ namespace BangazonAuth.Models.ProductViewModels
 
         }
 
-        public ProductOrderDetailViewModel() { }
+        //public ProductOrderDetailViewModel() { }
 
 
     }

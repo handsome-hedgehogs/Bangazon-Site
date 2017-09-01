@@ -24,10 +24,10 @@
         {
             <tr>
                 <td>
-                    @item.Title
+                    <a>@item.Title</a> 
                 </td>
                 <td>
-                    @item.Price               
+                    @item.Price.ToString("C")               
                 </td>                  
             </tr>
         }
@@ -41,8 +41,8 @@
     </thead>
     <tbody>
         <tr>
-            <td>@Model.Total</td>
             <td></td>
+            <td>@Model.Total.ToString("C")</td>
         </tr>
     </tbody>
 </table>

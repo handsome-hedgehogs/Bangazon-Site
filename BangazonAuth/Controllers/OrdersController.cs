@@ -74,7 +74,7 @@ namespace BangazonAuth.Controllers
 
 
         // GET: Orders/CompletedOrderDetail/5
-        public async Task<IActionResult> CompletedOrderDetail(int? id)
+        public IActionResult CompletedOrderDetail(int? id)
         {
             ProductOrderDetailViewModel prodViewModel = new ProductOrderDetailViewModel(id, _context);
 
