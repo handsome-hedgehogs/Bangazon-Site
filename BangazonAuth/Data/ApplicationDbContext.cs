@@ -25,25 +25,20 @@ namespace BangazonAuth.Data
 
             // Auto generating dates written by Jackie Knight and Eliza Meeks
             // Table constraints written by Eliza Meeks
-
-            // Payment type auto generating dates
-            builder.Entity<PaymentType>()
-                .Property(b => b.DateCreated)
-                .HasDefaultValueSql("GETDATE()");
-
+            
             // Product type constraints
-            //builder.Entity<ProductType>()
-            //    .HasMany(o => o.Products)
-            //    .WithOne(l => l.ProductType)
-            //    .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ProductType>()
+                .HasMany(o => o.Products)
+                .WithOne(l => l.ProductType)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            //Order auto generating dates and constraints
+            //Order auto generating dates
             builder.Entity<Order>()
                 .HasMany(o => o.OrderProducts)
                 .WithOne(l => l.Order)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            //Product builder constraints and auto generating dates
+            
+            //Product builder constraints
             builder.Entity<Product>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
