@@ -42,10 +42,18 @@
                 @await Html.PartialAsync("_LoginPartial")
                 <form asp-controller="Products" asp-action="Search" method="get" >
                     <ul class="nav navbar-nav">
+                        <li>
+                            <select name="SearchBy">
+                                <option value="Product">Products</option>"
+                                <option value="LocalDelivery">Local Delivery</option>
+                            </select>
+                        </li>
                         <li><input type="text" name="SearchString" /></li>
                         <li><input type="submit" value="Search" /></li>
                     </ul>
-                 </form>
+                    
+                </form>
+                
             </div>
         </div>
     </div>
