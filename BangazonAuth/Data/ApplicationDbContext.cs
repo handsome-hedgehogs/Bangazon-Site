@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Models;
 using BangazonAuth.Models.AccountViewModels;
 using BangazonAuth.Models.ManageViewModels;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BangazonAuth.Data
 {
@@ -19,18 +20,81 @@ namespace BangazonAuth.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
             base.OnModelCreating(builder);
 
-            // Written by Jackie Knight and Eliza Meeks
-            // Makes tables autogenerate dates.
+            // Auto generating dates written by Jackie Knight and Eliza Meeks
+            // Table constraints written by Eliza Meeks
+
+            // Payment type auto generating dates
+            builder.Entity<PaymentType>()
+                .Property(b => b.DateCreated)
+                .HasDefaultValueSql("GETDATE()");
+
+            // Product type constraints
+            //builder.Entity<ProductType>()
+            //    .HasMany(o => o.Products)
+            //    .WithOne(l => l.ProductType)
+            //    .OnDelete(DeleteBehavior.Restrict);
+
+            //Order auto generating dates and constraints
+            builder.Entity<Order>()
+                .HasMany(o => o.OrderProducts)
+                .WithOne(l => l.Order)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Product builder constraints and auto generating dates
             builder.Entity<Product>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
-            builder.Entity<Order>()
-                .Property(b => b.DateCreated)
-                .HasDefaultValueSql("GETDATE()");
+            builder.Entity<Product>()
+                .HasMany(o => o.OrderProducts)
+                .WithOne(l => l.Product)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Product>()
+                .HasMany(o => o.Recommended)
+                .WithOne(l => l.Product)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Product>()
+                .HasMany(o => o.UserLiked)
+                .WithOne(l => l.Product)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Product>()
+                .HasMany(o => o.Ratings)
+                .WithOne(l => l.Product)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Application user constraints
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.Orders)
+                .WithOne(o => o.User)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.PaymentTypes)
+                .WithOne(o => o.User)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.Products)
+                .WithOne(o => o.User)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.Ratings)
+                .WithOne(o => o.User)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.UserLiked)
+                .WithOne(o => o.User)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.RecommendedByMe)
+                .WithOne(o => o.Recommender)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.RecommendedToMe)
+                .WithOne(o => o.Recommendee)
+                .OnDelete(DeleteBehavior.Restrict);
         }
-      
+
         public DbSet<ProductType> ProductType { get; set; }
 
         public DbSet<Product> Product { get; set; }
@@ -40,7 +104,9 @@ namespace BangazonAuth.Data
         public DbSet<PaymentType> PaymentType { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-   
+
         public DbSet<Rating> Rating { get; set; }
+
+        public DbSet<OrderProduct> OrderProduct { get; set; }
     }
 }

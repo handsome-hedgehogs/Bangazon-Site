@@ -1,0 +1,39 @@
+@model IEnumerable<BangazonAuth.Models.Order>
+
+    @{
+        ViewData["Title"] = "OrderHX";
+    }
+
+    <h2>Order History</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Order Number")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateCreated)
+                </th>
+                <th>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Orders" asp-action="CompletedOrderDetail" asp-route-id="@item.OrderId">@item.OrderId</a>
+                    </td>
+                    <td>
+                        @item.DateCreated
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a asp-controller="Manage" asp-action="Index">Back to Profile</a>
+    </div>

@@ -7,17 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Data;
 using BangazonAuth.Models;
+using Microsoft.AspNetCore.Identity;
+using BangazonAuth.Models.ProductViewModels;
 
 namespace BangazonAuth.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
+
+        // This task retrieves the currently authenticated user
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Orders
         public async Task<IActionResult> Index()
@@ -44,6 +51,50 @@ namespace BangazonAuth.Controllers
 
             return View(order);
         }
+
+
+        // GET: Orders/OrderHX/5
+        // View passes current user ID
+        // queries Order table for user ID and a Payment Type
+        // If Payment is not null then it is a completed order
+        // Authored by : Tamela Lerma
+        public async Task<IActionResult> OrderHX(string id)
+        {
+            var user = await GetCurrentUserAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var orders = await _context.Order
+                .Where(m => m.User == user && m.PaymentTypeId != null).ToListAsync();
+            if (orders == null)
+            {
+                return NotFound();
+            }
+
+            return View(orders);
+        }
+
+
+        // GET: Orders/CompletedOrderDetail/5
+        // Create Instance of ViewModel ProductOrderDetailViewModel
+        // OrderId is passed in from OrderHX Razor view
+        // VM also needs argument of DBContext to query Database
+        // Returns a list of Products for one order
+        // Authored by : Tamela Lerma
+        public IActionResult CompletedOrderDetail(int? id)
+        {
+            ProductOrderDetailViewModel prodViewModel = new ProductOrderDetailViewModel(id, _context);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            return View(prodViewModel);
+        }
+
 
         // GET: Orders/Create
         public IActionResult Create()
