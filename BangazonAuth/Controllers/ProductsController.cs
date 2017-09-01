@@ -38,6 +38,15 @@ namespace BangazonAuth.Controllers
 
         }
 
+        [Authorize]
+        public async Task<IActionResult> CannotAddToOrder()
+        {
+            // If no id was in the route, return 404
+            ApplicationUser user = await GetCurrentUserAsync();
+
+            return View(user);
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Detail([FromRoute]int? id)
@@ -67,8 +76,14 @@ namespace BangazonAuth.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Detail(Product product)
         {
-            ModelState.Remove("product.User");
             var user = await GetCurrentUserAsync();
+
+            ApplicationUser productSeller = _context.Product.Where(p => p.ProductId == product.ProductId).Select(p => p.User).First();
+            if (productSeller == user)
+            {
+                return RedirectToAction("CannotAddToOrder", product.ProductId);
+            }
+            ModelState.Remove("product.User");
 
             if (ModelState.IsValid)
             {
