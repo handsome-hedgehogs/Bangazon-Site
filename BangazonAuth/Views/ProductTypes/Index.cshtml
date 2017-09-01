@@ -9,7 +9,7 @@
 {
     <div class="row">
         <div class="col-md-12">
-            <a asp-controller="ProductTypes" asp-action="Detail" asp-route-type="@type.ProductTypeId">
+            <a asp-controller="Products" asp-action="OfType" asp-route-searchString="@type.Label">
                 <h4>@type.Label (@Html.DisplayFor(modelItem => type.Quantity))</h4>
             </a>
         </div>
