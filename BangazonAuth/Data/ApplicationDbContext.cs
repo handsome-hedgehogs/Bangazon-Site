@@ -32,10 +32,10 @@ namespace BangazonAuth.Data
                 .HasDefaultValueSql("GETDATE()");
 
             // Product type constraints
-            builder.Entity<ProductType>()
-                .HasMany(o => o.Products)
-                .WithOne(l => l.ProductType)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.Entity<ProductType>()
+            //    .HasMany(o => o.Products)
+            //    .WithOne(l => l.ProductType)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             //Order auto generating dates and constraints
             builder.Entity<Order>()
