@@ -1,15 +1,16 @@
-﻿@model BangazonAuth.Models.ProductViewModels.ProductListViewModel
+
+@model BangazonAuth.Models.ProductViewModels.ProductListViewModel
+
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "OfType";
 }
 
-<h2 class="top-buffer">@ViewData["Title"]</h2>
+<h2>OfType</h2>
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Title</th>
-            <th>Description</th>
             <th>Quantity</th>
             <th>Price</th>
         </tr>
@@ -19,14 +20,13 @@
     {
         <tr>
             <td>
-                <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.ProductId">
-                    @Html.DisplayFor(modelItem => product.Title)
+                <a asp-action="Detail" asp-route-id="@product.ProductId">
+                    @Html.DisplayFor(ModelItem => product.Title)
                 </a>
             </td>
-            <td>@Html.DisplayFor(modelItem => product.Description)</td>
             <td>@Html.DisplayFor(modelItem => product.Quantity)</td>
             <td>@Html.DisplayFor(modelItem => product.Price)</td>
         </tr>
     }
-
 </table>
+

@@ -17,6 +17,6 @@ namespace BangazonAuth.Models
     [NotMapped]
     public int Quantity { get; set; }
 
-    public ICollection<Product> Products { get; set; }
+    public IEnumerable<Product> Products { get; set; }
   }
 }
