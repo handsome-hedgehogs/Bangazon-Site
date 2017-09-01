@@ -16,7 +16,8 @@ namespace BangazonAuth.Controllers
     public class ProductsController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private ApplicationUser _currentUser;
+        private ApplicationUser _currentUser { get; set; }
+
         private ApplicationDbContext _context;
         public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
@@ -35,23 +36,23 @@ namespace BangazonAuth.Controllers
             // Set the properties of the view model
             model.Products = await _context.Product.ToListAsync();
             return View(model);
-
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Detail([FromRoute]int? id)
+        public async Task<IActionResult> Details([FromRoute]int? id)
         {
             // If no id was in the route, return 404
             if (id == null)
             {
                 return NotFound();
             }
-            _currentUser = await GetCurrentUserAsync();
-            // Create new instance of view model
-            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, id);
 
-            
+            // Create new instance of view model
+            ProductDetailViewModel model = new ProductDetailViewModel();
+
+            // Set the `Product` property of the view model
+            model.Product = await _context.Product
+                    .Include(prod => prod.User)
+                    .SingleOrDefaultAsync(prod => prod.ProductId == id);
 
             // If product not found, return 404
             if (model.Product == null)
@@ -61,35 +62,7 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Detail(Product product)
-        {
-            ModelState.Remove("product.User");
-            var user = await GetCurrentUserAsync();
-            Order newOrder = new Order() { User = user };
-            OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId=product.ProductId };
-            
-            if (ModelState.IsValid)
-            {
-                /*
-                    If all other properties validation, then grab the 
-                    currently authenticated user and assign it to the 
-                    product before adding it to the db _context
-                */
-
-                _context.Order.Add(newOrder);
-                _context.OrderProduct.Add(newOrderProduct);
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
-            return View(model);
-        }
-
+        
         //Author: Willie Pruitt
         //Filters and Displays List of products based on user input {searchString}
         public async Task<IActionResult> Search(string searchBy, string searchString)

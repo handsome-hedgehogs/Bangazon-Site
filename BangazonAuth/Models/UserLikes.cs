@@ -13,7 +13,7 @@ namespace BangazonAuth.Models
         public int UserLikeId { get; set; }
 
         [Required]
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
         [Required]
         public int ProductId { get; set; }
