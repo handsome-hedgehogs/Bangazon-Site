@@ -33,7 +33,7 @@
         <br />
         <a asp-controller="PaymentTypes" asp-action="Create" >Add Method of Payment</a>
         <br />
-        <a asp-controller="Orders" asp-action="OrderHX" asp-route-id="@Model.AppUser.Id">Order History</a>
+        <a asp-action="OrderHXDetail" asp-route-id="">Order History</a>
     </div> 
     <br />
     <a asp-action="EditProfile" asp-route-id="@Model.AppUser.Id" class="btn btn-default">Edit Profile</a>
