@@ -18,8 +18,9 @@ namespace BangazonAuth.Models
 
 
         [Required]
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Date Created")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime DateCreated { get; set; }
 
         public int? PaymentTypeId { get; set; }
