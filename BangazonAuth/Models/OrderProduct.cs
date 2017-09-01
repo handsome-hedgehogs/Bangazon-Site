@@ -17,6 +17,7 @@ namespace BangazonAuth.Models
         public virtual Order Order { get; set; }
 
         [Required]
+        
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
     }
