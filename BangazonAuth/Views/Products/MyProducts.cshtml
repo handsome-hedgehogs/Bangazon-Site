@@ -1,4 +1,4 @@
-@model IEnumerable<BangazonAuth.Models.ProductViewModels.MyProductsViewModel>
+@model BangazonAuth.Models.ProductViewModels.MyProductsViewModel
 @{
     ViewData["Title"] = "MyProducts";
 }
@@ -22,30 +22,20 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in @Model.Products)
+        @foreach (var item in @Model.SoldProd)
         {
             <tr>
                 <td>
-                   
+                   @item.ProdTitle
                 </td>
                 <td>
-                    @item.Price.ToString("C")
+                    @item.ProdQuantity
+                </td>
+                <td>
+                    @item.ProdCount
                 </td>
             </tr>
         }
-    </tbody>
-    <thead>
-        <tr>
-            <th></th>
-            <th>@Html.DisplayName("Total")</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td></td>
-            <td>@Model.Total.ToString("C")</td>
-        </tr>
     </tbody>
 </table>
 
