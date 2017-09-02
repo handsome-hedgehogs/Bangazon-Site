@@ -123,9 +123,7 @@ namespace BangazonAuth.Migrations
                         .IsRequired()
                         .HasMaxLength(20);
 
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
+                    b.Property<DateTime>("DateCreated");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -405,9 +403,8 @@ namespace BangazonAuth.Migrations
             modelBuilder.Entity("BangazonAuth.Models.Product", b =>
                 {
                     b.HasOne("BangazonAuth.Models.ProductType", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Products")
+                        .HasForeignKey("ProductTypeId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
                         .WithMany("Products")

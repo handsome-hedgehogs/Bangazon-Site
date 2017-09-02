@@ -16,6 +16,7 @@ namespace BangazonAuth.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationUser currentUser { get; set; }
 
         public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -29,8 +30,9 @@ namespace BangazonAuth.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Order.Include(o => o.PaymentType);
-            return View(await applicationDbContext.ToListAsync());
+            ApplicationUser currentUser = await GetCurrentUserAsync();
+            ShoppingCartViewModel shoppingCart = new ShoppingCartViewModel(_context, currentUser);
+            return View(shoppingCart);
         }
 
         // GET: Orders/Details/5
@@ -207,5 +209,6 @@ namespace BangazonAuth.Controllers
         {
             return _context.Order.Any(e => e.OrderId == id);
         }
+        
     }
 }

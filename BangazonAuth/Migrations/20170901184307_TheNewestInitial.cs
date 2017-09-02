@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BangazonAuth.Migrations
 {
-    public partial class Initial : Migration
+    public partial class TheNewestInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -85,7 +85,7 @@ namespace BangazonAuth.Migrations
                     PaymentTypeId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AccountNumber = table.Column<string>(maxLength: 20, nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    DateCreated = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 12, nullable: false),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -166,7 +166,7 @@ namespace BangazonAuth.Migrations
                         column: x => x.ProductTypeId,
                         principalTable: "ProductType",
                         principalColumn: "ProductTypeId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Product_AspNetUsers_UserId",
                         column: x => x.UserId,

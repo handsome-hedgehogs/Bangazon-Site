@@ -38,6 +38,15 @@ namespace BangazonAuth.Controllers
 
         }
 
+        [Authorize]
+        public async Task<IActionResult> CannotAddToOrder()
+        {
+            // If no id was in the route, return 404
+            ApplicationUser user = await GetCurrentUserAsync();
+
+            return View(user);
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Detail([FromRoute]int? id)
@@ -51,8 +60,6 @@ namespace BangazonAuth.Controllers
             // Create new instance of view model
             ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, id);
 
-
-
             // If product not found, return 404
             if (model.Product == null)
             {
@@ -62,27 +69,51 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
+        //Written by: Eliza Meeks
+        //Adds products to order fromt he product detail view
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Detail(Product product)
         {
-            ModelState.Remove("product.User");
             var user = await GetCurrentUserAsync();
-            Order newOrder = new Order() { User = user };
-            OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+
+            ApplicationUser productSeller = _context.Product.Where(p => p.ProductId == product.ProductId).Select(p => p.User).First();
+            if (productSeller == user)
+            {
+                return RedirectToAction("CannotAddToOrder", product.ProductId);
+            }
+            ModelState.Remove("product.User");
 
             if (ModelState.IsValid)
             {
-                /*
-                    If all other properties validation, then grab the 
-                    currently authenticated user and assign it to the 
-                    product before adding it to the db _context
-                */
-
-                _context.Order.Add(newOrder);
-                _context.OrderProduct.Add(newOrderProduct);
-
+                try
+                {
+                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                    
+                }
+                catch
+                {
+                    Order newOrder = new Order() { User = user };
+                    _context.Order.Add(newOrder);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                }
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }

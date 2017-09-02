@@ -8,8 +8,8 @@ using BangazonAuth.Data;
 namespace BangazonAuth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170901174354_Initial")]
-    partial class Initial
+    [Migration("20170901184307_TheNewestInitial")]
+    partial class TheNewestInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,9 +124,7 @@ namespace BangazonAuth.Migrations
                         .IsRequired()
                         .HasMaxLength(20);
 
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
+                    b.Property<DateTime>("DateCreated");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -406,9 +404,8 @@ namespace BangazonAuth.Migrations
             modelBuilder.Entity("BangazonAuth.Models.Product", b =>
                 {
                     b.HasOne("BangazonAuth.Models.ProductType", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Products")
+                        .HasForeignKey("ProductTypeId");
 
                     b.HasOne("BangazonAuth.Models.ApplicationUser", "User")
                         .WithMany("Products")
