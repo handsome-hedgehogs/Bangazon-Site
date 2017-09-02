@@ -189,12 +189,13 @@ namespace BangazonAuth.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> ProductStatus(MyProductsViewModel myProducts)
+        public async Task<IActionResult> MyProducts()
         {
             var user = await GetCurrentUserAsync();
-            myProducts = new MyProductsViewModel(_context, user);
-           
-            
+
+            MyProductsViewModel myProducts = new MyProductsViewModel(_context, user);
+
+                              
             return View(myProducts);                        
         }
 
