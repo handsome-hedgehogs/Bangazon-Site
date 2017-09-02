@@ -189,13 +189,15 @@ namespace BangazonAuth.Controllers
 
         [HttpGet]
         [Authorize]
+        // Method that uses ViewModel MyProductsViewModel to handle DB query and Class SoldProductsGroup
+        // Returns a List of Products that can display for a customer how many items still in stock and 
+        // how many have been sold
+        // Authored by : Jackie Knight && Tamela Lerma
         public async Task<IActionResult> MyProducts()
         {
             var user = await GetCurrentUserAsync();
-
-            MyProductsViewModel myProducts = new MyProductsViewModel(_context, user);
-
-                              
+            // create VM instance and pass in DBContext along with current user
+            MyProductsViewModel myProducts = new MyProductsViewModel(_context, user);                          
             return View(myProducts);                        
         }
 

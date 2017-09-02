@@ -1,9 +1,10 @@
 ﻿using BangazonAuth.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
+// Class that is used in MyProductsViewModel to display how many products a customer has in stock
+// and how many they have sold
+// the IEnumerable SoldProductsList is populated on the viewModel with these class properties
+//Authored by : Jackie Knight && Tamela Lerma
 namespace BangazonAuth.Classes
 {
     public class SoldProductsGroup
