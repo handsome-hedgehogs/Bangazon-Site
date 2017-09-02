@@ -15,6 +15,8 @@ namespace BangazonAuth.Classes
 
         public int ProdCount { get; set; }
 
+        public int ProdId { get; set; }
+
         public IEnumerable<Product> SoldProductsList { get; set; }
     }
 }

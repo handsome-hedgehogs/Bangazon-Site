@@ -98,7 +98,7 @@ namespace BangazonAuth.Controllers
                         updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
                         _context.Product.Update(updateProductQuantity);
                     }
-                    
+
                 }
                 catch
                 {
@@ -113,7 +113,7 @@ namespace BangazonAuth.Controllers
                         _context.Product.Update(updateProductQuantity);
                     }
                 }
-                
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }

@@ -36,9 +36,43 @@
                 </td>
             </tr>
         }
+
+        @foreach (var item in @Model.ProdOnOrder)
+        {
+            <tr>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    0
+                </td>
+            </tr>
+
+        }
+
+        @foreach (var item in @Model.NotSold)
+        {
+            <tr>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    0
+                </td>
+            </tr>
+
+        }
     </tbody>
+
 </table>
 
-<div>
-    <a asp-controller="Home" asp-action="Index">Back to Home</a>
-</div>
+    <div>
+        <a asp-controller="Home" asp-action="Index">Back to Home</a>
+    </div>
+
