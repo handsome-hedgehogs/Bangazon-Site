@@ -11,7 +11,7 @@ namespace BangazonAuth.Models.ManageViewModels
 {
     public class IndexViewModel
     {
-       
+
         public ApplicationUser AppUser { get; set; }
 
         public ICollection<PaymentType> PaymentTypes { get; set; }
@@ -20,9 +20,16 @@ namespace BangazonAuth.Models.ManageViewModels
 
         public ICollection<Product> Products { get; set; }
 
+
         public IndexViewModel()
         {
             AppUser = new ApplicationUser();
+             
+
         }
+
+
+
     }
+        
 }

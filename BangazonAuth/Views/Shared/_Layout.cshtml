@@ -26,26 +26,35 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Products" asp-action="Index" class="navbar-brand">Bangazon!</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Bangazon!</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (Context.User.Identity.IsAuthenticated)
                     {
                     
-                    <li><a href="/types">Product Types</a></li>                   
-                    <li><a asp-area="Account" asp-controller="Products" asp-action="Create">Sell Something</a></li> 
+                    <li><a asp-controller="ProductTypes" asp-action="Index">Product Categories</a></li>                   
+                    <li><a asp-area="Account" asp-controller="Products" asp-action="Create">Sell A Product</a></li> 
 
                     }
+                    
 
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
                 <form asp-controller="Products" asp-action="Search" method="get" >
                     <ul class="nav navbar-nav">
+                        <li>
+                            <select name="SearchBy">
+                                <option value="Product">Products</option>"
+                                <option value="LocalDelivery">Local Delivery</option>
+                            </select>
+                        </li>
                         <li><input type="text" name="SearchString" /></li>
                         <li><input type="submit" value="Search" /></li>
                     </ul>
-                 </form>
+                    
+                </form>
+                
             </div>
         </div>
     </div>
