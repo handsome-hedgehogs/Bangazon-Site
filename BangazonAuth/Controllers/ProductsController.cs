@@ -91,43 +91,10 @@ namespace BangazonAuth.Controllers
             Order existingOrder = _context.Order.SingleOrDefault(o => o.PaymentTypeId == null && o.User == user);
             if (existingOrder == null)
             {
-<<<<<<< HEAD
                 Order newOrder = new Order() { User = user };
                 _context.Order.Add(newOrder);
                 OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
                 _context.OrderProduct.Add(newOrderProduct);
-
-=======
-                try
-                {
-                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
-                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
-                    _context.OrderProduct.Add(newOrderProduct);
-                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
-                    if (updateProductQuantity != null)
-                    {
-                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
-                        _context.Product.Update(updateProductQuantity);
-                    }
-
-                }
-                catch
-                {
-                    Order newOrder = new Order() { User = user };
-                    _context.Order.Add(newOrder);
-                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
-                    _context.OrderProduct.Add(newOrderProduct);
-                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
-                    if (updateProductQuantity != null)
-                    {
-                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
-                        _context.Product.Update(updateProductQuantity);
-                    }
-                }
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
->>>>>>> 62037b8167655cf3a859f5dd06219257025d7081
             }
             else
             {

@@ -34,12 +34,12 @@ namespace BangazonAuth.Models.ProductViewModels
                         {
                             ProdTitle = grouped.Key.Title, // set Title Property 
                             ProdId = grouped.Key.ProductId, // set Product Id Property
-                            ProdQuantity = grouped.Key.Quantity, // set quantity property
-                            ProdCount = grouped.Select(g => g.ot.ProductId).Count() // set the Count Property
+                            ProdCount = grouped.Select(g => g.ot.ProductId).Count(), // set the Count Property
+                            ProdQuantity = grouped.Key.Quantity - grouped.Select(g => g.ot.ProductId).Count() // reduce the quantity by count sold
                             // from the grouped var, select each ProuductId in OrderProduct and Count the # of times it appears on the table
                         }
                         ).ToList(); // return as a list
-
+            
 
             // Query that returns List of Customers Products that have not been sold or added to an order
             NotSold =
