@@ -37,8 +37,11 @@ else
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <a asp-controller="Products" asp-action="RemoveProductFromOrder" asp-route-id="@item.ProductId">Delete</a>
-
+                <form asp-controller="Products" asp-action="RemoveProductFromOrderConfirmed">
+                    <input type="hidden" name="OrderId" value="@Model.Order.OrderId" />
+                    <input type="hidden" name="ProductId" value="@item.ProductId" />
+                    <input type="submit" value="Delete" class="btn btn-default" />
+                </form>
             </td>
 
         </tr>

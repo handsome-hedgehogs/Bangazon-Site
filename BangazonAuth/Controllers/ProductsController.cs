@@ -233,33 +233,19 @@ namespace BangazonAuth.Controllers
         }
 
 
-        // GET: Orders/Details/5
-        public async Task<IActionResult> RemoveProductFromOrder(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var orderProduct = await _context.OrderProduct
-                .SingleOrDefaultAsync(m => m.ProductId == id);
-            if (orderProduct == null)
-            {
-                return NotFound();
-            }
-
-            return View(orderProduct);
-        }
 
         // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveProductFromOrderConfirmed(int id)
+        public async Task<IActionResult> RemoveProductFromOrderConfirmed(int OrderId, int ProductId)
         {
-            var orderProduct = await _context.OrderProduct.SingleOrDefaultAsync(m => m.ProductId == id);
-            _context.OrderProduct.Remove(orderProduct);
+            var user = await GetCurrentUserAsync();
+
+            var orderProduct = await _context.OrderProduct.FirstAsync(m => m.ProductId == ProductId && m.OrderId == OrderId);
+
+            _context.OrderProduct.Remove(orderProduct);         
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Orders");
         }
 
 

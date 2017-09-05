@@ -11,7 +11,7 @@
     <h4>Order</h4>
     <hr />
     <dl class="dl-horizontal">
-        <input type="hidden" asp-for="OrderId" />
+        <input type="hidden" asp-for="OrderProduct" />
         <dt>
             @Html.DisplayNameFor(model => model.CustomerId)
         </dt>
@@ -32,7 +32,7 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="RemoveProductFromOrderConfirmed">
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
             <a asp-action="Index">Back to List</a>
