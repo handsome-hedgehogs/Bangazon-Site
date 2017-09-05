@@ -82,6 +82,7 @@ namespace BangazonAuth.Controllers
         public async Task<IActionResult> Detail(Product product)
         {
             var user = await GetCurrentUserAsync();
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
 
             ApplicationUser productSeller = _context.Product.Where(p => p.ProductId == product.ProductId).Select(p => p.User).First();
             if (productSeller == user)
@@ -90,40 +91,23 @@ namespace BangazonAuth.Controllers
             }
             ModelState.Remove("product.User");
 
-            if (ModelState.IsValid)
+
+
+            Order existingOrder = _context.Order.SingleOrDefault(o => o.PaymentTypeId == null && o.User == user);
+            if (existingOrder == null)
             {
-                try
-                {
-                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
-                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
-                    _context.OrderProduct.Add(newOrderProduct);
-                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
-                    if (updateProductQuantity != null)
-                    {
-                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
-                        _context.Product.Update(updateProductQuantity);
-                    }
-                    
-                }
-                catch
-                {
-                    Order newOrder = new Order() { User = user };
-                    _context.Order.Add(newOrder);
-                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
-                    _context.OrderProduct.Add(newOrderProduct);
-                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
-                    if (updateProductQuantity != null)
-                    {
-                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
-                        _context.Product.Update(updateProductQuantity);
-                    }
-                }
-                
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                Order newOrder = new Order() { User = user };
+                _context.Order.Add(newOrder);
+                OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+                _context.OrderProduct.Add(newOrderProduct);
             }
-            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
-            return View(model);
+            else
+            {
+                OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
+                _context.OrderProduct.Add(newOrderProduct);
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         //Author: Willie Pruitt
@@ -214,6 +198,8 @@ namespace BangazonAuth.Controllers
             return View(model2);
         }
 
+
+
         public async Task<IActionResult> Types()
         {
             var model = new ProductTypesViewModel();
@@ -235,6 +221,38 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
+
+
+        [HttpGet]
+        [Authorize]
+        // Method that uses ViewModel MyProductsViewModel to handle DB query and Class SoldProductsGroup
+        // Returns a List of Products that can display for a customer how many items still in stock and 
+        // how many have been sold
+        // Authored by : Jackie Knight && Tamela Lerma
+        public async Task<IActionResult> MyProducts()
+        {
+            var user = await GetCurrentUserAsync();
+            // create VM instance and pass in DBContext along with current user
+            MyProductsViewModel myProducts = new MyProductsViewModel(_context, user);                          
+            return View(myProducts);                        
+        }
+
+
+
+        // POST: Orders/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveProductFromOrderConfirmed(int OrderId, int ProductId)
+        {
+            var user = await GetCurrentUserAsync();
+
+            var orderProduct = await _context.OrderProduct.FirstAsync(m => m.ProductId == ProductId && m.OrderId == OrderId);
+
+            _context.OrderProduct.Remove(orderProduct);         
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Orders");
+        }
+
 
         public IActionResult Error()
         {
