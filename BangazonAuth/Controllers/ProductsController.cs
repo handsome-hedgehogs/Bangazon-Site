@@ -89,7 +89,7 @@ namespace BangazonAuth.Controllers
             {
                 try
                 {
-                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
+                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null && o.User == user);
                     OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
                     _context.OrderProduct.Add(newOrderProduct);
                     Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
