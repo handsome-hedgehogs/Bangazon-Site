@@ -35,4 +35,8 @@
     <None Include="BangazonAuth.sln" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\products\" />
+  </ItemGroup>
+
 </Project>

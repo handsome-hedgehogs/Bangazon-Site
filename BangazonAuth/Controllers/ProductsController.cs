@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System;
+using Microsoft.AspNetCore.Hosting;
+using System.Net.Http.Headers;
+using System.IO;
 
 namespace BangazonAuth.Controllers
 {
@@ -17,12 +20,14 @@ namespace BangazonAuth.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private ApplicationUser _currentUser { get; set; }
+        private IHostingEnvironment _environment;
 
         private ApplicationDbContext _context;
-        public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
+        public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager, IHostingEnvironment environment)
         {
             _userManager = userManager;
             _context = ctx;
+            _environment = environment;
         }
 
         // This task retrieves the currently authenticated user
@@ -84,10 +89,11 @@ namespace BangazonAuth.Controllers
         [Authorize]
         public async Task<IActionResult> Create()
         {
-            ProductCreateViewModel model = new ProductCreateViewModel(_context, _currentUser);
+            ProductCreateViewModel model = new ProductCreateViewModel(_context);
 
             // Get current user
             var user = await GetCurrentUserAsync();
+            model.Product = new Product();
 
             return View(model);
         }
@@ -95,11 +101,16 @@ namespace BangazonAuth.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductCreateViewModel model)
         {
             // Remove the user from the model validation because it is
             // not information posted in the form
             ModelState.Remove("product.User");
+            ModelState.Remove("Product.PhotoURL");
+            var errors = ModelState
+            .Where(x => x.Value.Errors.Count > 0)
+            .Select(x => new { x.Key, x.Value.Errors })
+            .ToArray();
 
             if (ModelState.IsValid)
             {
@@ -108,17 +119,27 @@ namespace BangazonAuth.Controllers
                     currently authenticated user and assign it to the 
                     product before adding it to the db _context
                 */
+                foreach(var file in model.Image)
+                {
+                    var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    filename = _environment.WebRootPath + $@"\products\{file.FileName.Split('\\').Last()}";
+                    using(var fileStream = new FileStream(filename, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                        model.Product.PhotoURL = $@"\products\{file.FileName.Split('\\').Last()}";
+                    }
+                }
                 var user = await GetCurrentUserAsync();
-                product.User = user;
+                model.Product.User = user;
 
-                _context.Add(product);
+                _context.Add(model.Product);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ProductCreateViewModel model = new ProductCreateViewModel(_context, _currentUser);
-            return View(model);
+            ProductCreateViewModel model2 = new ProductCreateViewModel(_context);
+            return View(model2);
         }
 
         public async Task<IActionResult> Types()

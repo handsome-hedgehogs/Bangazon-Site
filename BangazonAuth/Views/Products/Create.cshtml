@@ -52,13 +52,14 @@
                 <span asp-validation-for="@Model.Product.Location" class="text-danger" />
             </div>
         </div>
-        <div class="form-group">
+        @*<div class="form-group">
             <div class="col-md-10">
                 @Html.LabelFor(model => model.Product.PhotoURL)
                 <input asp-for="@Model.Product.PhotoURL" class="form-control" />
-                <span asp-validation-for="@Model.Product.PhotoURL" class="text-danger" />
-                <input asp-for="@Model.Image" type="file" name="image" />
             </div>
+        </div>*@
+        <div>
+             <input asp-for="Image" type="file" id="image" name="image" accept="image/*"/>
         </div>
         <div class="form-group">
             <div class="col-md-10">
