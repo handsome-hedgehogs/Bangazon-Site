@@ -6,7 +6,8 @@
 
 <h2>Create</h2>
 
-<form asp-action="Create">
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
     <div class="form-horizontal">
         <hr />
         <div class="form-group">
@@ -51,24 +52,26 @@
                 <span asp-validation-for="@Model.Product.Location" class="text-danger" />
             </div>
         </div>
-        <div class="form-group">
+        @*<div class="form-group">
             <div class="col-md-10">
                 @Html.LabelFor(model => model.Product.PhotoURL)
                 <input asp-for="@Model.Product.PhotoURL" class="form-control" />
-                <span asp-validation-for="@Model.Product.PhotoURL" class="text-danger" />
             </div>
+        </div>*@
+        <div>
+             <input asp-for="Image" type="file" id="image" name="image" accept="image/*"/>
         </div>
         <div class="form-group">
             <div class="col-md-10">
                 <label>Product Type</label>
                 @Html.DropDownList(
-                    "Product.ProductTypeId",
-                    @Model.ProductTypeId,
-                    new
-                    {
-                        @name = "Product.ProductTypeId"
-                    }
-                )
+             "Product.ProductTypeId",
+             @Model.ProductTypeId,
+             new
+             {
+                 @name = "Product.ProductTypeId"
+             }
+         )
                 <span asp-validation-for="@Model.Product.ProductTypeId" class="text-danger" />
             </div>
         </div>
@@ -78,7 +81,7 @@
             </div>
         </div>
     </div>
-</form>
+}
 
 <div>
     <a asp-action="Index">Back to List</a>
