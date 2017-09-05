@@ -91,11 +91,43 @@ namespace BangazonAuth.Controllers
             Order existingOrder = _context.Order.SingleOrDefault(o => o.PaymentTypeId == null && o.User == user);
             if (existingOrder == null)
             {
+<<<<<<< HEAD
                 Order newOrder = new Order() { User = user };
                 _context.Order.Add(newOrder);
                 OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
                 _context.OrderProduct.Add(newOrderProduct);
 
+=======
+                try
+                {
+                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+
+                }
+                catch
+                {
+                    Order newOrder = new Order() { User = user };
+                    _context.Order.Add(newOrder);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+>>>>>>> 62037b8167655cf3a859f5dd06219257025d7081
             }
             else
             {
@@ -178,6 +210,8 @@ namespace BangazonAuth.Controllers
             return View(model);
         }
 
+
+
         public async Task<IActionResult> Types()
         {
             var model = new ProductTypesViewModel();
@@ -199,6 +233,38 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
+
+
+        [HttpGet]
+        [Authorize]
+        // Method that uses ViewModel MyProductsViewModel to handle DB query and Class SoldProductsGroup
+        // Returns a List of Products that can display for a customer how many items still in stock and 
+        // how many have been sold
+        // Authored by : Jackie Knight && Tamela Lerma
+        public async Task<IActionResult> MyProducts()
+        {
+            var user = await GetCurrentUserAsync();
+            // create VM instance and pass in DBContext along with current user
+            MyProductsViewModel myProducts = new MyProductsViewModel(_context, user);                          
+            return View(myProducts);                        
+        }
+
+
+
+        // POST: Orders/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveProductFromOrderConfirmed(int OrderId, int ProductId)
+        {
+            var user = await GetCurrentUserAsync();
+
+            var orderProduct = await _context.OrderProduct.FirstAsync(m => m.ProductId == ProductId && m.OrderId == OrderId);
+
+            _context.OrderProduct.Remove(orderProduct);         
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Orders");
+        }
+
 
         public IActionResult Error()
         {
