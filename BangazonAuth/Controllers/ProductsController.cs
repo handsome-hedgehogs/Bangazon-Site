@@ -77,6 +77,7 @@ namespace BangazonAuth.Controllers
         public async Task<IActionResult> Detail(Product product)
         {
             var user = await GetCurrentUserAsync();
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
 
             ApplicationUser productSeller = _context.Product.Where(p => p.ProductId == product.ProductId).Select(p => p.User).First();
             if (productSeller == user)
@@ -85,40 +86,24 @@ namespace BangazonAuth.Controllers
             }
             ModelState.Remove("product.User");
 
-            if (ModelState.IsValid)
+
+
+            Order existingOrder = _context.Order.SingleOrDefault(o => o.PaymentTypeId == null && o.User == user);
+            if (existingOrder == null)
             {
-                try
-                {
-                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null && o.User == user);
-                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
-                    _context.OrderProduct.Add(newOrderProduct);
-                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
-                    if (updateProductQuantity != null)
-                    {
-                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
-                        _context.Product.Update(updateProductQuantity);
-                    }
-                    
-                }
-                catch
-                {
-                    Order newOrder = new Order() { User = user };
-                    _context.Order.Add(newOrder);
-                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
-                    _context.OrderProduct.Add(newOrderProduct);
-                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
-                    if (updateProductQuantity != null)
-                    {
-                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
-                        _context.Product.Update(updateProductQuantity);
-                    }
-                }
-                
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                Order newOrder = new Order() { User = user };
+                _context.Order.Add(newOrder);
+                OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+                _context.OrderProduct.Add(newOrderProduct);
+
             }
-            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
-            return View(model);
+            else
+            {
+                OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
+                _context.OrderProduct.Add(newOrderProduct);
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         //Author: Willie Pruitt
