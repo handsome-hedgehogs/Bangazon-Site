@@ -17,7 +17,7 @@ namespace BangazonAuth.Models.ProductViewModels
 
         public List<Product> NotSold { get; set; }
 
-        public List<Product> ProdOnOrder { get; set; }
+        public List<ProdOnOrderGroup> ProdOnOrder { get; set; }
 
         public MyProductsViewModel(ApplicationDbContext context, ApplicationUser user)
         {
@@ -50,15 +50,23 @@ namespace BangazonAuth.Models.ProductViewModels
 
 
             // Query that returns list of products that are on an order but the order has not been completed
-            ProdOnOrder= (from p in context.Product // from products on Product Table
-                        where p.User == user // where user is the customer
-                        join ot in context.OrderProduct // join with OrderProduct
-                        on p.ProductId equals ot.ProductId // where the Product Tavle ProductId equals the ProductId on OrderProduct
-                        join o in context.Order // join this Product with Order Table
-                        on ot.OrderId equals o.OrderId // the the OrderId on the OrderProduct Table equls the OrderId on Order Table
-                        where o.PaymentType == null // where the PaymentType is not completed
-                        where !SoldProd.Any(s => s.ProdId == p.ProductId) // and where this Product does not exist on the SoldProd List
-                        select p).ToList(); // select these Products
+            ProdOnOrder = (from p in context.Product // from products on Product Table
+                           where p.User == user // where user is the customer
+                           join ot in context.OrderProduct // join with OrderProduct
+                           on p.ProductId equals ot.ProductId // where the Product Tavle ProductId equals the ProductId on OrderProduct
+                           join o in context.Order // join this Product with Order Table
+                           on ot.OrderId equals o.OrderId // the the OrderId on the OrderProduct Table equls the OrderId on Order Table
+                           where o.PaymentType == null // where the PaymentType is not completed
+                           where !SoldProd.Any(s => s.ProdId == p.ProductId) // and where this Product does not exist on the SoldProd List
+                           group new { p, o } by new { p.Title, p.Quantity, p.ProductId } into newGroup
+                           select new ProdOnOrderGroup
+                           {
+                               ProdTitle = newGroup.Key.Title,
+                               ProdQuantity = newGroup.Key.Quantity,
+                               ProdCount = newGroup.Select(po => po.p.ProductId).Count()
+                           }
+                        
+                        ).ToList(); // select these Products
         }
     }
 }
