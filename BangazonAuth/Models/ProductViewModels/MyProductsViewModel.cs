@@ -22,7 +22,7 @@ namespace BangazonAuth.Models.ProductViewModels
         public MyProductsViewModel(ApplicationDbContext context, ApplicationUser user)
         {
             // Query that returns customers products that have been sold
-            SoldProd = (from p in context.Product // where there are products in product table
+             SoldProd = (from p in context.Product // where there are products in product table
                         where p.User == user      // where the user on the product row is the same as current user
                         join ot in context.OrderProduct // join with the OrderProduct table
                         on p.ProductId equals ot.ProductId // where the productID is the same

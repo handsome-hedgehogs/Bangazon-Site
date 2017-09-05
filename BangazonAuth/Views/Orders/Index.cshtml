@@ -36,9 +36,14 @@ else
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+            <td>
+                <a asp-controller="Products" asp-action="RemoveProductFromOrder" asp-route-id="@item.ProductId">Delete</a>
+
+            </td>
 
         </tr>
     }
     </tbody>
 </table>
+     <a asp-action="Index">Back to Cart</a>
 }
