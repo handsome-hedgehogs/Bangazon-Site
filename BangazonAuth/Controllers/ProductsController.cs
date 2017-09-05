@@ -21,7 +21,6 @@ namespace BangazonAuth.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private ApplicationUser _currentUser { get; set; }
         private IHostingEnvironment _environment;
-
         private ApplicationDbContext _context;
         public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager, IHostingEnvironment environment)
         {
@@ -41,8 +40,20 @@ namespace BangazonAuth.Controllers
             // Set the properties of the view model
             model.Products = await _context.Product.ToListAsync();
             return View(model);
+
         }
 
+        [Authorize]
+        public async Task<IActionResult> CannotAddToOrder()
+        {
+            // If no id was in the route, return 404
+            ApplicationUser user = await GetCurrentUserAsync();
+
+            return View(user);
+        }
+
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Detail([FromRoute]int? id)
         {
             // If no id was in the route, return 404
@@ -50,14 +61,9 @@ namespace BangazonAuth.Controllers
             {
                 return NotFound();
             }
-
+            _currentUser = await GetCurrentUserAsync();
             // Create new instance of view model
-            ProductDetailViewModel model = new ProductDetailViewModel();
-
-            // Set the `Product` property of the view model
-            model.Product = await _context.Product
-                    .Include(prod => prod.User)
-                    .SingleOrDefaultAsync(prod => prod.ProductId == id);
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, id);
 
             // If product not found, return 404
             if (model.Product == null)
@@ -67,20 +73,86 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
-        
+
+        //Written by: Eliza Meeks
+        //Adds products to order fromt he product detail view
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Detail(Product product)
+        {
+            var user = await GetCurrentUserAsync();
+
+            ApplicationUser productSeller = _context.Product.Where(p => p.ProductId == product.ProductId).Select(p => p.User).First();
+            if (productSeller == user)
+            {
+                return RedirectToAction("CannotAddToOrder", product.ProductId);
+            }
+            ModelState.Remove("product.User");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Order existingOrder = _context.Order.Single(o => o.PaymentTypeId == null);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = existingOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                    
+                }
+                catch
+                {
+                    Order newOrder = new Order() { User = user };
+                    _context.Order.Add(newOrder);
+                    OrderProduct newOrderProduct = new OrderProduct() { OrderId = newOrder.OrderId, ProductId = product.ProductId };
+                    _context.OrderProduct.Add(newOrderProduct);
+                    Product updateProductQuantity = _context.Product.SingleOrDefault(p => p.ProductId == product.ProductId);
+                    if (updateProductQuantity != null)
+                    {
+                        updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
+                        _context.Product.Update(updateProductQuantity);
+                    }
+                }
+                
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            ProductDetailViewModel model = new ProductDetailViewModel(_currentUser, _context, product.ProductId);
+            return View(model);
+        }
+
         //Author: Willie Pruitt
         //Filters and Displays List of products based on user input {searchString}
-        public async Task<IActionResult> Search(string searchString)
+        public async Task<IActionResult> Search(string searchBy, string searchString)
         {
             ProductListViewModel model = new ProductListViewModel();
-
-
             model.Products = await _context.Product
                 .ToListAsync();
             //If search param not empty or null, search if Product description or title contains input
+            if (!string.IsNullOrEmpty(searchString) && searchBy.Equals("Product"))
+            {
+                model.Products = model.Products.Where(p => p.Description.ToLower().Contains(searchString.ToLower()) || p.Title.ToLower().Contains(searchString.ToLower()));
+            }
+            else if (!string.IsNullOrEmpty(searchString) && searchBy.Equals("LocalDelivery"))
+            {
+                model.Products = model.Products.Where(p => p.LocalDelivery.Equals(true) && p.Location.ToLower().Contains(searchString.ToLower()));
+            }
+            return View(model);
+        }
+        //Author: Willie Pruitt
+        //Filters and Displays List of products based on user input {searchString}
+        public async Task<IActionResult> OfType(string searchString)
+        {
+            ProductListViewModel model = new ProductListViewModel();
+            //If search param not empty or null, search for Products with Product type equal to input
             if (!string.IsNullOrEmpty(searchString))
             {
-                model.Products = model.Products.Where(p => p.Description.Contains(searchString) || p.Title.Contains(searchString));
+                model.Products = await _context.Product.Where(p => p.ProductType.Label.Equals(searchString)).ToListAsync();
             }
             return View(model);
         }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonAuth.Models;
 using BangazonAuth.Data;
+using BangazonAuth.Models.ProductViewModels;
 
 namespace BangazonAuth.Controllers
 {
@@ -22,7 +23,28 @@ namespace BangazonAuth.Controllers
         // GET: ProductTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ProductType.ToListAsync());
+            var model = new ProductTypesViewModel();
+
+            // Get line items grouped by product id, including count
+            var counter = from product in _context.Product
+                          group product by product.ProductTypeId into grouped
+                          select new { grouped.Key, myCount = grouped.Count() };
+
+            // Build list of Product instances for display in view
+            model.ProductTypes = await (
+                from t in _context.ProductType
+                join p in _context.Product
+                on t.ProductTypeId equals p.ProductTypeId
+                group new { t, p } by new { t.ProductTypeId, t.Label } into grouped
+                select new ProductType
+                {
+                    ProductTypeId = grouped.Key.ProductTypeId,
+                    Label = grouped.Key.Label,
+                    Quantity = grouped.Select(x => x.p.ProductId).Count(),
+                    Products = grouped.Select(x => x.p).Take(3)
+                }).ToListAsync();
+
+            return View(model);
         }
 
         // GET: ProductTypes/Details/5
