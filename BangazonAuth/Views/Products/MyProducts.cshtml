@@ -1,0 +1,78 @@
+@model BangazonAuth.Models.ProductViewModels.MyProductsViewModel
+@{
+    ViewData["Title"] = "MyProducts";
+}
+
+<h2>My Products</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Product")
+            </th>
+            <th>
+                @Html.DisplayName("Current Inventory")
+            </th>
+            <th>
+                @Html.DisplayName("Number Sold")
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in @Model.SoldProd)
+        {
+            <tr>
+                <td>
+                   @item.ProdTitle
+                </td>
+                <td>
+                    @item.ProdQuantity
+                </td>
+                <td>
+                    @item.ProdCount
+                </td>
+            </tr>
+        }
+
+        @foreach (var item in @Model.ProdOnOrder)
+        {
+            <tr>
+                <td>
+                    @item.ProdTitle
+                </td>
+                <td>
+                    @item.ProdQuantity
+                </td>
+                <td>
+                    0
+                </td>
+            </tr>
+
+        }
+
+        @foreach (var item in @Model.NotSold)
+        {
+            <tr>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    0
+                </td>
+            </tr>
+
+        }
+    </tbody>
+
+</table>
+
+    <div>
+        <a asp-controller="Home" asp-action="Index">Back to Home</a>
+    </div>
+

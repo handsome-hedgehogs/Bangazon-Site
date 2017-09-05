@@ -103,7 +103,7 @@ namespace BangazonAuth.Controllers
                         updateProductQuantity.Quantity = updateProductQuantity.Quantity - 1;
                         _context.Product.Update(updateProductQuantity);
                     }
-                    
+
                 }
                 catch
                 {
@@ -118,7 +118,7 @@ namespace BangazonAuth.Controllers
                         _context.Product.Update(updateProductQuantity);
                     }
                 }
-                
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -214,6 +214,8 @@ namespace BangazonAuth.Controllers
             return View(model2);
         }
 
+
+
         public async Task<IActionResult> Types()
         {
             var model = new ProductTypesViewModel();
@@ -235,6 +237,38 @@ namespace BangazonAuth.Controllers
 
             return View(model);
         }
+
+
+        [HttpGet]
+        [Authorize]
+        // Method that uses ViewModel MyProductsViewModel to handle DB query and Class SoldProductsGroup
+        // Returns a List of Products that can display for a customer how many items still in stock and 
+        // how many have been sold
+        // Authored by : Jackie Knight && Tamela Lerma
+        public async Task<IActionResult> MyProducts()
+        {
+            var user = await GetCurrentUserAsync();
+            // create VM instance and pass in DBContext along with current user
+            MyProductsViewModel myProducts = new MyProductsViewModel(_context, user);                          
+            return View(myProducts);                        
+        }
+
+
+
+        // POST: Orders/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveProductFromOrderConfirmed(int OrderId, int ProductId)
+        {
+            var user = await GetCurrentUserAsync();
+
+            var orderProduct = await _context.OrderProduct.FirstAsync(m => m.ProductId == ProductId && m.OrderId == OrderId);
+
+            _context.OrderProduct.Remove(orderProduct);         
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Orders");
+        }
+
 
         public IActionResult Error()
         {
